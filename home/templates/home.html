@@ -1,0 +1,70 @@
+{% extends "home/templates/base.html" %}
+
+    {% block serverside %}
+        <div id="ServerWrap">
+            <h5>Django Template</h5>
+            {% include "home/templates/includes/django.html" %}
+        </div>
+
+    {% endblock serverside %}
+
+
+    {% block clientside %}
+        <div id="UnderscoreClientWrap">
+            This is a client side rendered template, using Underscore.
+        </div>
+        <script type="text/template" id="UTemplate">
+            <h5>Underscore Template</h5>
+            {% include "home/templates/includes/underscore.html" %}
+        </script>
+
+<hr>
+
+
+        <div id="DjangoClientWrap">
+            This is a client side rendered template, using a Django template language parser.
+        </div>
+        <script type="text/template" id="UTemplate">
+            <h5>Django Template</h5>
+            {% verbatim %}
+            <ol>
+                {% for key, value in plans.items %}
+                    <li> {{ key }}:
+                        {% if key == "professional" %}
+                            <ul>
+                                {% for item in value %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            {{ value }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+            {% endverbatim %}
+        </script>
+
+    {% endblock clientside %}
+
+
+
+    {% block foot %}
+        <script>
+            (function(Backbone, _){
+                var dict = {
+                        {% for key, value in plans.items %}
+                            "{{ key }}":
+                            {% if key == "professional" %}
+                                [{% for item in value %}"{{ item }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+                            {% else %}
+                                "{{ value }}"
+                            {% endif %}
+                            {% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                };
+                var UTemplate = _.template( $('#UTemplate').html());
+                $('#UnderscoreClientWrap').html(UTemplate(dict));
+            })(Backbone, _);
+        </script>
+    {% endblock foot %}

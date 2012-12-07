@@ -1,0 +1,16 @@
+<ol>
+    <% for (var key in obj) { %>
+    <li>
+        <%= key %>:
+        <% if (key === "professional") { %>
+        <ul>
+            <% for (var item in obj[key]) { %>
+            <li><%= obj[key][item] %></li>
+            <% } %>
+        </ul>
+        <% } else { %>
+        <%= obj[key] %>
+        <% } %>
+    </li>
+    <% } %>
+</ol>

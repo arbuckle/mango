@@ -1,0 +1,6 @@
+.idea/
+*/migrations/
+*.log
+*.pot
+*.pyc
+*.db
