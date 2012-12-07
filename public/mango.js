@@ -24,6 +24,16 @@
         '\u2029': 'u2029'
     };
     var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
+	htmlEscapes = {
+		"<":	"&lt;",
+		">":	"&gt;",
+		"'":	"&#39;",
+		"\"":	"&quot;",
+		"&":	"&amp;"
+	}
+	var htmlEscaper = /\'|\"|>|<|&/g;
+	var noMatch = /(.)^/;
+
 
 	mango.filters = {
 		trim: function(str) {
@@ -39,10 +49,18 @@
 			arg = (str.length >= 3) ? arg - 3 : str.length;
 			return str.substr(0, arg) + '...';
 		},
+		escape: function(str) {
+			if (typeof(str) === "string") {
+				return str.replace(htmlEscaper, function(match) {console.log('sreegs'); return htmlEscapes[match]; });
+			} else {
+				return str;
+			}
+		},
 		apply: function(tagList) {
 			var i,
 				tagMethod,
 				tagArgument,
+				safe = false,
 				tvar = tagList[0];
 				
 			for (i = 1; i < tagList.length; i ++) {
@@ -50,11 +68,14 @@
 				tagArgument = (tagMethod.length > 1) ? tagMethod[1] : undefined;
 				tagMethod = tagMethod[0];
 				
-				if (mango.filters[tagMethod] !== undefined) {
+				if (mango.filters[tagMethod] !== undefined && tagMethod !== 'safe') {
 					tvar = 'mango.filters.' + tagMethod + '(' + tvar + ', ' + tagArgument + ')';
-				} else {
-					tvar = tvar;
+				} else if (tagMethod === 'safe') {
+					safe = true;
 				}
+			}
+			if (!safe) {
+				tvar = 'mango.filters.escape(' + tvar + ')';
 			}
 			return tvar;
 		}
@@ -80,7 +101,7 @@
 
         // compiling the template source
         var index = 0;
-        var source = "__p+='"; //it's unclear what this does
+        var source = "__p+='";
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {
             "use strict";
@@ -90,8 +111,8 @@
 
             if (tvar) {
                 console.log('template var', tvar);
-                tvar = mango.filters.apply(tvar.split('|'));
-		        source += "'+\n((__t=(" + tvar + "))==null?'':__t)+\n'";
+				tvar = mango.filters.apply(tvar.split('|'));
+				source += "'+\n((__t=(" + tvar + "))==null?'':__t)+\n'";
             }
             if (tag) {
                 console.log('template tag', tag);

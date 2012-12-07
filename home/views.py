@@ -19,5 +19,7 @@ class Home(TemplateView):
             'numerator': 10,
             'denominator': 100,
             'fraction': 10/100.0,
+            'script_injection': '<script>console.log(\'Django script injected\')</script>',
+            'script_injection_js': '<script>console.log(\'JS script injected\')</script>',
             'phrase': "Welcome to the Jungle.  The Jungle."
         }

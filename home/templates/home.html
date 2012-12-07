@@ -16,6 +16,12 @@
 			{{ phrase|upper|truncatechars:12 }}
 			<hr>
 
+        	<h5>Variable with Template Tag</h5>
+			This is an example of escaping behavior.<br>
+			{{ script_injection }}<br>
+			{{ script_injection|safe }}<br>
+			<hr>
+
             <h5>Loop with nested condition, nested loop.</h5>
             {% include "home/templates/includes/django.html" %}
 
@@ -49,7 +55,18 @@
         		<hr>
         	{% endverbatim %}
         </script>
-        
+
+		<script type="text/template" id="script-injection">
+        	<h5>Variable with Template Tag</h5>
+        	{% verbatim %}
+				This is an example of escaping behavior.<br>
+				
+				{{ script_injection }}<br>
+				{{ script_injection|safe }}<br>
+				<hr>
+			{% endverbatim %}
+		</script>
+		
         <script type="text/template" id="nested-conditions-and-loops">
             <h5>Loop with nested condition, nested loop.</h5>
             {% verbatim %}
@@ -82,6 +99,7 @@
 				"denominator": {{ denominator }},
 				"fraction": {{ fraction }},
 				"phrase": "{{ phrase }}",
+				"script_injection": "{{ script_injection_js|escapejs }}",
 				"plans": {
 					{% for key, value in plans.items %}
 						"{{ key }}":
@@ -100,6 +118,8 @@
 			var svu = mango.template($('#variable-with-template-tag').html());
 			$('#DjangoClientWrap').append(svu(data));
 
-			
+			var svu = mango.template($('#script-injection').html());
+			$('#DjangoClientWrap').append(svu(data));
+
         </script>
     {% endblock foot %}
