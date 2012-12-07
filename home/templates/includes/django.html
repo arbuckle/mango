@@ -1,6 +1,6 @@
 <ol>
     {% for key, value in plans.items %}
-        <li> {{ key }}:
+        <li> {{ key|upper }}:
             {% if key == "professional" %}
                 <ul>
                     {% for item in value %}

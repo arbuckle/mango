@@ -10,26 +10,15 @@
 
 
     {% block clientside %}
-        <div id="UnderscoreClientWrap">
-            This is a client side rendered template, using Underscore.
-        </div>
-        <script type="text/template" id="UTemplate">
-            <h5>Underscore Template</h5>
-            {% include "home/templates/includes/underscore.html" %}
-        </script>
-
-<hr>
-
-
         <div id="DjangoClientWrap">
             This is a client side rendered template, using a Django template language parser.
         </div>
-        <script type="text/template" id="UTemplate">
+        <script type="text/template" id="DjangoTemplate">
             <h5>Django Template</h5>
             {% verbatim %}
             <ol>
                 {% for key, value in plans.items %}
-                    <li> {{ key }}:
+                    <li> {{ key|upper }}:
                         {% if key == "professional" %}
                             <ul>
                                 {% for item in value %}
@@ -51,20 +40,7 @@
 
     {% block foot %}
         <script>
-            (function(Backbone, _){
-                var dict = {
-                        {% for key, value in plans.items %}
-                            "{{ key }}":
-                            {% if key == "professional" %}
-                                [{% for item in value %}"{{ item }}"{% if not forloop.last %},{% endif %}{% endfor %}]
-                            {% else %}
-                                "{{ value }}"
-                            {% endif %}
-                            {% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                };
-                var UTemplate = _.template( $('#UTemplate').html());
-                $('#UnderscoreClientWrap').html(UTemplate(dict));
-            })(Backbone, _);
+            var MangoTemplate = mango.template($('#DjangoTemplate').html());
+
         </script>
     {% endblock foot %}
