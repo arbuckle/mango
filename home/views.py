@@ -16,4 +16,8 @@ class Home(TemplateView):
 
         return {
             'plans': plans,
+            'numerator': 10,
+            'denominator': 100,
+            'fraction': 10/100.0,
+            'phrase': "Welcome to the Jungle.  The Jungle."
         }

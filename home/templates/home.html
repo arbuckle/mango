@@ -2,8 +2,23 @@
 
     {% block serverside %}
         <div id="ServerWrap">
-            <h5>Django Template</h5>
+        	This is a server side rendered template, using Django's built in tags and filters.
+        	<hr>
+        	
+        	<h5>Simple Variable Usage</h5>
+			This is an example of simple variable replacement.<br>
+			{{ numerator }} / {{ denominator }} = {{ fraction }}
+			<hr>
+
+        	<h5>Variable with Template Tag</h5>
+			This is an example of simple variable replacement when a template tag is present.<br>
+			{{ phrase|upper }}<br>
+			{{ phrase|upper|truncatechars:12 }}
+			<hr>
+
+            <h5>Loop with nested condition, nested loop.</h5>
             {% include "home/templates/includes/django.html" %}
+
         </div>
 
     {% endblock serverside %}
@@ -12,9 +27,31 @@
     {% block clientside %}
         <div id="DjangoClientWrap">
             This is a client side rendered template, using a Django template language parser.
+            <hr>
         </div>
-        <script type="text/template" id="DjangoTemplate">
-            <h5>Django Template</h5>
+        
+        <script type="text/template" id="simple-variable-usage">
+        	<h5>Simple Variable Usage</h5>
+        	{% verbatim %}
+        		This is an example of simple variable replacement.<br>
+        		{{ numerator }} / {{ denominator }} = {{ fraction }}
+        		<hr>
+        	{% endverbatim %}
+        </script>
+
+        <script type="text/template" id="variable-with-template-tag">
+        	<h5>Variable with Template Tag</h5>
+        	{% verbatim %}
+        		This is an example of simple variable replacement when a template tag is present.<br>
+        		
+        		{{ phrase|upper }}<br>
+        		{{ phrase|upper|truncatechars:12 }}<br>
+        		<hr>
+        	{% endverbatim %}
+        </script>
+        
+        <script type="text/template" id="nested-conditions-and-loops">
+            <h5>Loop with nested condition, nested loop.</h5>
             {% verbatim %}
             <ol>
                 {% for key, value in plans.items %}
@@ -40,7 +77,29 @@
 
     {% block foot %}
         <script>
-            var MangoTemplate = mango.template($('#DjangoTemplate').html());
+			var data = {
+				"numerator": {{ numerator }},
+				"denominator": {{ denominator }},
+				"fraction": {{ fraction }},
+				"phrase": "{{ phrase }}",
+				"plans": {
+					{% for key, value in plans.items %}
+						"{{ key }}":
+						{% if key == "professional" %}
+							[{% for item in value %}"{{ item }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+						{% else %}
+							"{{ value }}"
+						{% endif %}
+						{% if not forloop.last %},{% endif %}
+					{% endfor %}
+				}
+			};        
+            var svu = mango.template($('#simple-variable-usage').html());
+            $('#DjangoClientWrap').append(svu(data));
+			
+			var svu = mango.template($('#variable-with-template-tag').html());
+			$('#DjangoClientWrap').append(svu(data));
 
+			
         </script>
     {% endblock foot %}
