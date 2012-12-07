@@ -22,6 +22,27 @@
 			{{ script_injection|safe }}<br>
 			<hr>
 
+        	<h5>Basic Conditional Use</h5>
+			This is an example of a simple conditional statement.<br>
+				
+			{% if 1 == 1 %}
+				Yes! One equals one!<br>
+			{% endif %}
+
+			{% if 1 == 1 and 2 == 1 %}
+				Wrong!
+			{% else %}
+				One does NOT equal two<br>
+			{% endif %}	
+			
+			{% if not True %}
+				Statement is True
+			{% else %}
+				Statement is False
+			{% endif%}			
+			<hr>
+
+
             <h5>Loop with nested condition, nested loop.</h5>
             {% include "home/templates/includes/django.html" %}
 
@@ -63,6 +84,32 @@
 				
 				{{ script_injection }}<br>
 				{{ script_injection|safe }}<br>
+				<hr>
+			{% endverbatim %}
+		</script>
+		
+		<script type="text/template" id="basic-conditional">
+        	<h5>Basic Conditional Use</h5>
+        	{% verbatim %}
+				This is an example of a simple conditional statement.<br>
+				
+				{% if 1==1 %}
+					Yes! One equals one!<br>
+				{%else%}
+					Wrong!<br>
+				{% endif %}
+				
+				{% if 1 == 1 and 2 == 1 %}
+					Wrong!<br>
+				{% else %}
+					One does NOT equal two<br>
+				{% endif %}		
+				
+				{% if not True %}
+					Statement is True<br>
+				{% else %}
+					Statement is False<br>
+				{% endif%}						
 				<hr>
 			{% endverbatim %}
 		</script>
@@ -121,6 +168,10 @@
 
 			var svu = mango.template($('#script-injection').html());
 			$('#DjangoClientWrap').append(svu(data));
+			
+			var svu = mango.template($('#basic-conditional').html());
+			$('#DjangoClientWrap').append(svu(data));
+			
 
         </script>
     {% endblock foot %}
