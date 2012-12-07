@@ -51,7 +51,7 @@
 		},
 		escape: function(str) {
 			if (typeof(str) === "string") {
-				return str.replace(htmlEscaper, function(match) {console.log('sreegs'); return htmlEscapes[match]; });
+				return str.replace(htmlEscaper, function(match) {return htmlEscapes[match]; });
 			} else {
 				return str;
 			}

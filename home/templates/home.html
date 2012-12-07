@@ -10,13 +10,13 @@
 			{{ numerator }} / {{ denominator }} = {{ fraction }}
 			<hr>
 
-        	<h5>Variable with Template Tag</h5>
-			This is an example of simple variable replacement when a template tag is present.<br>
+        	<h5>Variable with Template Filter</h5>
+			This is an example of simple variable replacement when a template filter is present.<br>
 			{{ phrase|upper }}<br>
 			{{ phrase|upper|truncatechars:12 }}
 			<hr>
 
-        	<h5>Variable with Template Tag</h5>
+        	<h5>Variable with Template Filter</h5>
 			This is an example of escaping behavior.<br>
 			{{ script_injection }}<br>
 			{{ script_injection|safe }}<br>
@@ -45,10 +45,10 @@
         	{% endverbatim %}
         </script>
 
-        <script type="text/template" id="variable-with-template-tag">
-        	<h5>Variable with Template Tag</h5>
+        <script type="text/template" id="variable-with-template-filter">
+        	<h5>Variable with Template Filter</h5>
         	{% verbatim %}
-        		This is an example of simple variable replacement when a template tag is present.<br>
+        		This is an example of simple variable replacement when a template filter is present.<br>
         		
         		{{ phrase|upper }}<br>
         		{{ phrase|upper|truncatechars:12 }}<br>
@@ -57,7 +57,7 @@
         </script>
 
 		<script type="text/template" id="script-injection">
-        	<h5>Variable with Template Tag</h5>
+        	<h5>Variable with Template Filter</h5>
         	{% verbatim %}
 				This is an example of escaping behavior.<br>
 				
@@ -100,6 +100,7 @@
 				"fraction": {{ fraction }},
 				"phrase": "{{ phrase }}",
 				"script_injection": "{{ script_injection_js|escapejs }}",
+				"fruits": [{% for fruit in fruits %}"{{ fruit }}"{% if not forloop.last %},{% endif %}{% endfor %}],
 				"plans": {
 					{% for key, value in plans.items %}
 						"{{ key }}":
@@ -115,7 +116,7 @@
             var svu = mango.template($('#simple-variable-usage').html());
             $('#DjangoClientWrap').append(svu(data));
 			
-			var svu = mango.template($('#variable-with-template-tag').html());
+			var svu = mango.template($('#variable-with-template-filter').html());
 			$('#DjangoClientWrap').append(svu(data));
 
 			var svu = mango.template($('#script-injection').html());
