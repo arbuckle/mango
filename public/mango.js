@@ -88,6 +88,7 @@
 	}
 
 	mango.tags = {
+        _in_empty: [],
 		if: function(args) {
 			// 1 = 1, 1 = 2...  search for operators and grab the values on either side?  
 			// better yet:  find and replace and, or, not, etc with: && || !
@@ -129,6 +130,7 @@
               • arguments.split(,) denotes the number of assignments which need to be made inside the loop.
               • The assignments made within the loop do *not* need to be unique, since it's assumed that the user will
                 respect the global namespace when making loop-local assignments (not sure how Django handles this currently)
+              • Check for loop.length prior to loop execution in order to support {% empty %} clause.
             */
             var i,
                 ret,
@@ -146,26 +148,42 @@
 
             loopVar = loopVar.split('.');
             if (loopVar.length > 1 && loopVar[1].toLowerCase() === 'items') {
-                /* it's a dict! */
+                /* it's a dict! Checking length for {% empty %} and opening loop. */
                 loopVar = loopVar[0];
-                ret = "for ( var " + loopArgs[0] + " in " + loopVar + ") { \n ";
+                ret = "c=0; for (i in " + loopVar + ") {if ("+loopVar+".hasOwnProperty(i)) {c++;}} \n";
+                ret += "if (c > 0) { \n ";
+                ret += "for ( var " + loopArgs[0] + " in " + loopVar + ") { \n ";
                 ret += "var " + loopArgs[1] + " = " + loopVar + "[" + loopArgs[0] + "]; \n";
             } else {
                 loopVar = loopVar[0];
-                /* it's an array! */
-                ret = "for (i=0; i < " + loopVar + ".length; i ++) { \n ";
+                /* it's an array! Checking length for {% empty %} and opening loop. */
+                ret = "if (" + loopVar + ".length) { \n ";
+                ret += "for (i=0; i < " + loopVar + ".length; i ++) { \n ";
                 for (i=0; i < loopArgs.length; i ++) {
                     ret += "if (typeof(" + loopVar + "[" + i + "]) == 'object') { \n";
                     ret += "var " + loopArgs[i] + " = " + loopVar + "[i][" + i + "]; \n";
-                    ret += "} else { ";
+                    ret += "} else { \n";
                     ret += "var " + loopArgs[i] + " = " + loopVar + "[i]; \n";
-                    ret += "}";
+                    ret += "} \n";
                 }
             }
             return ret;
         },
         endfor: function() {
-            return "\n } \n";
+            if (mango.tags._in_empty.length) {
+                mango.tags._in_empty.pop();
+                return "\n } \n";
+            } else {
+                return "\n } \n } \n";
+            }
+
+        },
+        empty: function() {
+            // Every loop is wrapped in an IF condition
+            // When {% empty %} is present, an ELSE condition is populated and the mango.tags._in_empty object
+            // is incremented to indicate that an additional closing brace for the FOR loop is not required.
+            mango.tags._in_empty.push(1);
+            return "\n } \n } else { \n";
         },
         apply_filters: function(args) {
             /* Runs through list of template filters and applies filters when | is found. */
@@ -220,8 +238,8 @@
         // compiling the template source
         var index = 0;
         var source = "__p+='";
-        source += "';\n var i; \n__p+='"; /* declare i for loops*/
-        source += "';\n var _mango_loop = {}; \n__p+='"; /* declare _mango_loop namespace for loops*/
+        source += "';\n var i; \n__p+='"; /* declare i for loops */
+        source += "';\n var c; \n__p+='"; /* declare c for dict counters */
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {
             "use strict";
@@ -230,12 +248,10 @@
                 .replace(escaper, function(match) {return '\\' + escapes[match]; });
 
             if (tvar) {
-                console.log('template var', tvar);
 				tvar = mango.filters.apply(tvar);
 				source += "'+\n((__t=(" + tvar + "))==null?'':__t)+\n'";
             }
             if (tag) {
-                console.log('template tag', tag);
                 tag = mango.tags.apply(tag);
 		        source += "';\n" + tag + "\n__p+='";
             }
@@ -255,6 +271,7 @@
 			source + "return __p;\n";
 
 		try {
+            console.log(source);
 			var render = new Function(undefined || 'obj', 'mango', source);
 		} catch (e) {
 			e.source = source;

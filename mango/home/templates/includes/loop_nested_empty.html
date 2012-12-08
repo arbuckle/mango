@@ -1,0 +1,28 @@
+<div class="test">
+    <h5>Loop with nested condition, nested loop.</h5>
+    <ol>
+        {% for key, value in plans_empty.items %}
+            <li> {{ key|upper }}:
+                {% if key == "professional" or key == "premium"%}
+                    <ul>
+                        {% for item in value %}
+                            <li>{{ item }}</li>
+                        {% empty %}
+                            &lt;This inner loop is empty.&gt;<br>
+                            {% for item in basic_list %}
+                                {{ item }}<br>
+                                {% for item in empty_list %}
+                                    {{ item }}<br>
+                                {% empty %}
+                                    this deeply nested list is empty<br>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {{ value }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>

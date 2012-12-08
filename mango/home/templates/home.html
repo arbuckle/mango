@@ -23,6 +23,7 @@
             {% include "mango/home/templates/includes/conditions_elif.html" %}
             {% include "mango/home/templates/includes/for_loop_array.html" %}
             {% include "mango/home/templates/includes/loop_conditions_nesting.html" %}
+            {% include "mango/home/templates/includes/loop_nested_empty.html" %}
         </div>
 
     {% endblock serverside %}
@@ -62,9 +63,12 @@
             {% include_verbatim "mango/home/templates/includes/for_loop_array.html" %}
         </script>
 
-
         <script type="text/template" id="nested-conditions-and-loops">
             {% include_verbatim "mango/home/templates/includes/loop_conditions_nesting.html" %}
+        </script>
+
+        <script type="text/template" id="loop-nested-inner-empty">
+            {% include_verbatim "mango/home/templates/includes/loop_nested_empty.html" %}
         </script>
     {% endblock clientside %}
 
@@ -96,6 +100,9 @@
             $('#DjangoClientWrap').append(svu(data));
 
             var svu = mango.template($('#nested-conditions-and-loops').html());
+            $('#DjangoClientWrap').append(svu(data));
+
+            var svu = mango.template($('#loop-nested-inner-empty').html());
             $('#DjangoClientWrap').append(svu(data));
 
         </script>
