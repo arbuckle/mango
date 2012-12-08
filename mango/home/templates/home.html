@@ -1,5 +1,5 @@
 {% extends "mango/home/templates/base.html" %}
-{% load include_verbatim %}
+{% load insecure %}
 
     {% block serverside %}
         <div id="ServerWrap">
@@ -117,23 +117,7 @@
 		
         <script type="text/template" id="nested-conditions-and-loops">
             <h5>Loop with nested condition, nested loop.</h5>
-            {% verbatim %}
-            <ol>
-                {% for key, value in plans.items %}
-                    <li> {{ key|upper }}:
-                        {% if key == "professional" %}
-                            <ul>
-                                {% for item in value %}
-                                    <li>{{ item }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            {{ value }}
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ol>
-            {% endverbatim %}
+            {% include_verbatim "mango/home/templates/includes/django.html" %}
         </script>
 
     {% endblock clientside %}
@@ -172,7 +156,10 @@
 			
 			var svu = mango.template($('#basic-conditional').html());
 			$('#DjangoClientWrap').append(svu(data));
-			
 
+            var svu = mango.template($('#nested-conditions-and-loops').html());
+            $('#DjangoClientWrap').append(svu(data));
+
+        console.log($('#nested-conditions-and-loops').html())
         </script>
     {% endblock foot %}
