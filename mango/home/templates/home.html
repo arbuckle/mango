@@ -1,4 +1,5 @@
-{% extends "home/templates/base.html" %}
+{% extends "mango/home/templates/base.html" %}
+{% load include_verbatim %}
 
     {% block serverside %}
         <div id="ServerWrap">
@@ -44,7 +45,7 @@
 
 
             <h5>Loop with nested condition, nested loop.</h5>
-            {% include "home/templates/includes/django.html" %}
+            {% include "mango/home/templates/includes/django.html" %}
 
         </div>
 

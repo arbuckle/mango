@@ -4,7 +4,7 @@ class Home(TemplateView):
     """
     Basic empty view
     """
-    template_name = 'home/templates/home.html'
+    template_name = 'mango/home/templates/home.html'
 
 
     def get_context_data(self, **kwargs):
