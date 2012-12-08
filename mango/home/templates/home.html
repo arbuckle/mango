@@ -19,6 +19,7 @@
             {% include "mango/home/templates/includes/var_filter.html" %}
             {% include "mango/home/templates/includes/var_safe.html" %}
             {% include "mango/home/templates/includes/conditions.html" %}
+            {% include "mango/home/templates/includes/conditions_with_vars.html" %}
             {% include "mango/home/templates/includes/loop_conditions_nesting.html" %}
         </div>
 
@@ -46,9 +47,13 @@
 		<script type="text/template" id="basic-conditional">
             {% include_verbatim "mango/home/templates/includes/conditions.html" %}
         </script>
-		
+
+        <script type="text/template" id="conditions_with_variables">
+            {% include_verbatim "mango/home/templates/includes/conditions_with_vars.html" %}
+        </script>
+
         <script type="text/template" id="nested-conditions-and-loops">
-            {% include_verbatim "mango/home/templates/includes/loop_conditions_nesting.html" %}
+            {#  include_verbatim "mango/home/templates/includes/loop_conditions_nesting.html" #}
         </script>
     {% endblock clientside %}
 
@@ -70,8 +75,13 @@
 			var svu = mango.template($('#basic-conditional').html());
 			$('#DjangoClientWrap').append(svu(data));
 
-            var svu = mango.template($('#nested-conditions-and-loops').html());
+            var svu = mango.template($('#conditions_with_variables').html());
             $('#DjangoClientWrap').append(svu(data));
+
+
+
+            //var svu = mango.template($('#nested-conditions-and-loops').html());
+            //$('#DjangoClientWrap').append(svu(data));
 
         </script>
     {% endblock foot %}

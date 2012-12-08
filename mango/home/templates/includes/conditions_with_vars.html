@@ -1,0 +1,34 @@
+    <div class="test">
+    <h5>Conditional Use with Variables</h5>
+    This is an example of a conditional statement which performs comparisons between variables.<br>
+
+    {% if numerator == 10 %}
+        Correct<br>
+    {% else %}
+        Wrong!
+    {% endif %}
+
+    {% if denominator == 100 and numerator == 1000 %}
+        Wrong!
+    {% else %}
+        Correct<br>
+    {% endif %}
+
+    {% if denominator == numerator %}
+        Wrong!
+    {% else %}
+        Correct<br>
+    {% endif%}
+
+    {% if numerator and denominator %}
+        Correct<br>
+    {% else %}
+        Wrong!
+    {% endif %}
+
+    {% if phrase and phrase|length == 35%}
+        Correct<br>
+    {% else %}
+        Wrong!
+    {% endif %}
+</div>

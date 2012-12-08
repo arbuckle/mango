@@ -57,6 +57,9 @@
 				return str;
 			}
 		},
+        length: function(str) {
+            return str.length;
+        },
 		apply: function(tvar) {
 			/* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
 			var i,
@@ -116,6 +119,17 @@
 		endif: function() {
 			return "\n } \n";
 		},
+        apply_filters: function(args) {
+            /* Runs through list of template filters and applies filters when | is found. */
+            var i,
+                l = args.length;
+            for (i = 0; i < l; i ++) {
+                if (args[i].split('|').length > 1) {
+                    args[i] = mango.filters.apply(args[i]);
+                }
+            }
+            return args;
+        },
 		apply: function(tagStatement) {
 			/* accepts a template tag, normalizes it, and executes the method of mango.tags for the specified filter. */
 			// pad out conditional statements, remove redundant white space and split
@@ -127,7 +141,8 @@
 			
 			var tag = tagStatement.shift(),
 				args = tagStatement;
-			
+            args = mango.tags.apply_filters(args); //TODO:  this may be inappropriate for certain tags
+
 			if (mango.tags[tag] !== undefined) {
 				return mango.tags[tag](args);
 			} else {
