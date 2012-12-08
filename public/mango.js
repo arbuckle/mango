@@ -122,6 +122,51 @@
 		endif: function() {
 			return "\n } \n";
 		},
+        for: function(args){
+            /*
+              • indexOf "in" denotes the division between loop "arguments" and the loop var "variable".
+              • variable.split('.') denotes whether we're looking at an array or a dict.
+              • arguments.split(,) denotes the number of assignments which need to be made inside the loop.
+              • The assignments made within the loop do *not* need to be unique, since it's assumed that the user will
+                respect the global namespace when making loop-local assignments (not sure how Django handles this currently)
+            */
+            var i,
+                ret,
+                varType,
+                loopArgs = args.slice(0, args.indexOf('in')),
+                loopVar = args.slice(args.indexOf('in') + 1, args.length + 1)[0];
+
+            /* cleaning up the loop args by removing stray commas */
+            for (i=0; i < loopArgs.length; i ++) {
+                loopArgs[i] = loopArgs[i].replace(',', '');
+                if (loopArgs[i] === '') {
+                    loopArgs.splice(i, 1);
+                }
+            }
+
+            loopVar = loopVar.split('.');
+            if (loopVar.length > 1 && loopVar[1].toLowerCase() === 'items') {
+                /* it's a dict! */
+                loopVar = loopVar[0];
+                ret = "for ( var " + loopArgs[0] + " in " + loopVar + ") { \n ";
+                ret += "var " + loopArgs[1] + " = " + loopVar + "[" + loopArgs[0] + "]; \n";
+            } else {
+                loopVar = loopVar[0];
+                /* it's an array! */
+                ret = "for (i=0; i < " + loopVar + ".length; i ++) { \n ";
+                for (i=0; i < loopArgs.length; i ++) {
+                    ret += "if (typeof(" + loopVar + "[" + i + "]) == 'object') { \n";
+                    ret += "var " + loopArgs[i] + " = " + loopVar + "[i][" + i + "]; \n";
+                    ret += "} else { ";
+                    ret += "var " + loopArgs[i] + " = " + loopVar + "[i]; \n";
+                    ret += "}";
+                }
+            }
+            return ret;
+        },
+        endfor: function() {
+            return "\n } \n";
+        },
         apply_filters: function(args) {
             /* Runs through list of template filters and applies filters when | is found. */
             var i,
@@ -175,6 +220,8 @@
         // compiling the template source
         var index = 0;
         var source = "__p+='";
+        source += "';\n var i; \n__p+='"; /* declare i for loops*/
+        source += "';\n var _mango_loop = {}; \n__p+='"; /* declare _mango_loop namespace for loops*/
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {
             "use strict";

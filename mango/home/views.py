@@ -20,6 +20,8 @@ class Home(TemplateView):
             'numerator': 10,
             'denominator': 100,
             'fraction': 10/100.0,
+            'fruits': ['apple', 'banana', 'mango'],
+            'groceries': [['apple', 4], ['banana', 6], ['mango', 2]],
             'script_injection': '<script>console.log(\'Script injected\')</script>',
             'phrase': "Welcome to the Jungle.  The Jungle."
         }
