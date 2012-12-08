@@ -56,28 +56,11 @@
 
     {% block foot %}
         <script>
-			var data = {
-				"numerator": {{ numerator }},
-				"denominator": {{ denominator }},
-				"fraction": {{ fraction }},
-				"phrase": "{{ phrase }}",
-				"script_injection": "{{ script_injection_js|escapejs }}",
-				"fruits": [{% for fruit in fruits %}"{{ fruit }}"{% if not forloop.last %},{% endif %}{% endfor %}],
-				"plans": {
-					{% for key, value in plans.items %}
-						"{{ key }}":
-						{% if key == "professional" %}
-							[{% for item in value %}"{{ item }}"{% if not forloop.last %},{% endif %}{% endfor %}]
-						{% else %}
-							"{{ value }}"
-						{% endif %}
-						{% if not forloop.last %},{% endif %}
-					{% endfor %}
-				}
-			};        
+            {% include "mango/home/templates/json/test_data.html" %}
+
             var svu = mango.template($('#simple-variable-usage').html());
             $('#DjangoClientWrap').append(svu(data));
-			
+
 			var svu = mango.template($('#variable-with-template-filter').html());
 			$('#DjangoClientWrap').append(svu(data));
 
@@ -90,6 +73,5 @@
             var svu = mango.template($('#nested-conditions-and-loops').html());
             $('#DjangoClientWrap').append(svu(data));
 
-        console.log($('#nested-conditions-and-loops').html())
         </script>
     {% endblock foot %}
