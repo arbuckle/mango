@@ -1,52 +1,25 @@
 {% extends "mango/home/templates/base.html" %}
 {% load insecure %}
 
+{% block head %}
+<style>
+    .test {
+        border-bottom: 1px solid rgb(221, 221, 221);
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+    }
+</style>
+{% endblock head %}
+
     {% block serverside %}
         <div id="ServerWrap">
-        	This is a server side rendered template, using Django's built in tags and filters.
+        	These are server side rendered templates, using Django's built in tags and filters.
         	<hr>
-        	
-        	<h5>Simple Variable Usage</h5>
-			This is an example of simple variable replacement.<br>
-			{{ numerator }} / {{ denominator }} = {{ fraction }}
-			<hr>
-
-        	<h5>Variable with Template Filter</h5>
-			This is an example of simple variable replacement when a template filter is present.<br>
-			{{ phrase|upper }}<br>
-			{{ phrase|upper|truncatechars:12 }}
-			<hr>
-
-        	<h5>Variable with Template Filter</h5>
-			This is an example of escaping behavior.<br>
-			{{ script_injection }}<br>
-			{{ script_injection|safe }}<br>
-			<hr>
-
-        	<h5>Basic Conditional Use</h5>
-			This is an example of a simple conditional statement.<br>
-				
-			{% if 1 == 1 %}
-				Yes! One equals one!<br>
-			{% endif %}
-
-			{% if 1 == 1 and 2 == 1 %}
-				Wrong!
-			{% else %}
-				One does NOT equal two<br>
-			{% endif %}	
-			
-			{% if not True %}
-				Statement is True
-			{% else %}
-				Statement is False
-			{% endif%}			
-			<hr>
-
-
-            <h5>Loop with nested condition, nested loop.</h5>
-            {% include "mango/home/templates/includes/django.html" %}
-
+            {% include "mango/home/templates/includes/var_simple.html" %}
+            {% include "mango/home/templates/includes/var_filter.html" %}
+            {% include "mango/home/templates/includes/var_safe.html" %}
+            {% include "mango/home/templates/includes/conditions.html" %}
+            {% include "mango/home/templates/includes/loop_conditions_nesting.html" %}
         </div>
 
     {% endblock serverside %}
@@ -54,72 +27,29 @@
 
     {% block clientside %}
         <div id="DjangoClientWrap">
-            This is a client side rendered template, using a Django template language parser.
+            These are client side rendered template, using a Django template language parser.
             <hr>
         </div>
         
         <script type="text/template" id="simple-variable-usage">
-        	<h5>Simple Variable Usage</h5>
-        	{% verbatim %}
-        		This is an example of simple variable replacement.<br>
-        		{{ numerator }} / {{ denominator }} = {{ fraction }}
-        		<hr>
-        	{% endverbatim %}
+            {% include_verbatim "mango/home/templates/includes/var_simple.html" %}
         </script>
 
         <script type="text/template" id="variable-with-template-filter">
-        	<h5>Variable with Template Filter</h5>
-        	{% verbatim %}
-        		This is an example of simple variable replacement when a template filter is present.<br>
-        		
-        		{{ phrase|upper }}<br>
-        		{{ phrase|upper|truncatechars:12 }}<br>
-        		<hr>
-        	{% endverbatim %}
+            {% include_verbatim "mango/home/templates/includes/var_filter.html" %}
         </script>
 
 		<script type="text/template" id="script-injection">
-        	<h5>Variable with Template Filter</h5>
-        	{% verbatim %}
-				This is an example of escaping behavior.<br>
-				
-				{{ script_injection }}<br>
-				{{ script_injection|safe }}<br>
-				<hr>
-			{% endverbatim %}
+            {% include_verbatim "mango/home/templates/includes/var_safe.html" %}
 		</script>
 		
 		<script type="text/template" id="basic-conditional">
-        	<h5>Basic Conditional Use</h5>
-        	{% verbatim %}
-				This is an example of a simple conditional statement.<br>
-				
-				{% if 1==1 %}
-					Yes! One equals one!<br>
-				{%else%}
-					Wrong!<br>
-				{% endif %}
-				
-				{% if 1 == 1 and 2 == 1 %}
-					Wrong!<br>
-				{% else %}
-					One does NOT equal two<br>
-				{% endif %}		
-				
-				{% if not True %}
-					Statement is True<br>
-				{% else %}
-					Statement is False<br>
-				{% endif%}						
-				<hr>
-			{% endverbatim %}
-		</script>
+            {% include_verbatim "mango/home/templates/includes/conditions.html" %}
+        </script>
 		
         <script type="text/template" id="nested-conditions-and-loops">
-            <h5>Loop with nested condition, nested loop.</h5>
-            {% include_verbatim "mango/home/templates/includes/django.html" %}
+            {% include_verbatim "mango/home/templates/includes/loop_conditions_nesting.html" %}
         </script>
-
     {% endblock clientside %}
 
 
