@@ -1,0 +1,20 @@
+<div class="test">
+    <h5>Conditions with ELIF</h5>
+    This is an example of a conditional statement using the elif tag.<br>
+
+    {% if denominator == 100 and numerator == 1000 %}
+        Wrong!
+    {% elif denominator == 100 and numerator == 10%}
+        Correct<br>
+    {% else %}
+        Wrong!
+    {% endif %}
+
+    {% if phrase and phrase|length != 35 %}
+        Wrong!
+    {% elif phrase and phrase|length == 35%}
+        Correct<br>
+    {% else %}
+        Wrong!
+    {% endif%}
+</div>

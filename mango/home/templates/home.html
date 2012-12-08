@@ -20,6 +20,7 @@
             {% include "mango/home/templates/includes/var_safe.html" %}
             {% include "mango/home/templates/includes/conditions.html" %}
             {% include "mango/home/templates/includes/conditions_with_vars.html" %}
+            {% include "mango/home/templates/includes/conditions_elif.html" %}
             {% include "mango/home/templates/includes/loop_conditions_nesting.html" %}
         </div>
 
@@ -52,6 +53,10 @@
             {% include_verbatim "mango/home/templates/includes/conditions_with_vars.html" %}
         </script>
 
+        <script type="text/template" id="conditions_elif">
+        {% include_verbatim "mango/home/templates/includes/conditions_elif.html" %}
+        </script>
+
         <script type="text/template" id="nested-conditions-and-loops">
             {#  include_verbatim "mango/home/templates/includes/loop_conditions_nesting.html" #}
         </script>
@@ -76,6 +81,9 @@
 			$('#DjangoClientWrap').append(svu(data));
 
             var svu = mango.template($('#conditions_with_variables').html());
+            $('#DjangoClientWrap').append(svu(data));
+
+            var svu = mango.template($('#conditions_elif').html());
             $('#DjangoClientWrap').append(svu(data));
 
 

@@ -113,6 +113,9 @@
 			}
 			return "if (" + args.join(' ') + ") { \n";
 		},
+        elif: function(args) {
+          return "\n } else " + mango.tags.if(args);
+        },
 		else: function() {
 			return "\n } else { \n";
 		},
