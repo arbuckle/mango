@@ -24,16 +24,32 @@
         '\u2029': 'u2029'
     };
     var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
-	htmlEscapes = {
-		"<":	"&lt;",
-		">":	"&gt;",
-		"'":	"&#39;",
-		"\"":	"&quot;",
-		"&":	"&amp;"
-	}
-	var htmlEscaper = /\'|\"|>|<|&/g;
-	var noMatch = /(.)^/;
+    var htmlEscapes = {
+        "<":	"&lt;",
+        ">":	"&gt;",
+        "'":	"&#39;",
+        "\"":	"&quot;",
+        "&":	"&amp;"
+    };
+    var htmlEscaper = /\'|\"|>|<|&/g;
+    var noMatch = /(.)^/;
 
+    mango.each = mango.forEach = function(obj, iterator, context) {
+        if (obj == null) return;
+        if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
+            obj.forEach(iterator, context);
+        } else if (obj.length === +obj.length) {
+            for (var i = 0, l = obj.length; i < l; i++) {
+                if (iterator.call(context, obj[i], i, obj) === {}) return;
+            }
+        } else {
+            for (var key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    if (iterator.call(context, obj[key], key, obj) === {}) return;
+                }
+            }
+        }
+    };
 
 	mango.filters = {
         add: function(str, arg) {
@@ -89,12 +105,20 @@
             return (str !== undefined) ? str.replace(/\n/g, '<br />'): str;
         },
         lower: function(str) {
+            if (typeof(str) !== "string" && typeof(str) !== "number") {
+                str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toLowerCase);
+                return str;
+            }
             return str.toLowerCase();
         },
         trim: function(str) {
 			return (str !== undefined) ? str.replace(/^\s+|\s+$/g, ''): str;
 		},
 		upper: function(str) {
+            if (typeof(str) !== "string" && typeof(str) !== "number") {
+                str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toUpperCase);
+                return str;
+            }
 			return str.toUpperCase();
 		},
 		truncatechars: function(str, arg) {
@@ -109,14 +133,28 @@
 				return str;
 			}
 		},
+        _traverse_obj_and_apply_string_method: function(obj, method) {
+            /* Probably a too-specific implementation of map.  Traverses an object and all child objects and
+               calls the specified 'method'. */
+            mango.each(obj, function(val, iter, parent_obj){
+                if (typeof(val) !== "string" && typeof(val) !== "number") {
+                    mango.filters._traverse_obj_and_apply_string_method(val, method);
+                } else if (typeof(val) === "number" ) {
+                    //do nothing to numbers
+                } else {
+                    parent_obj[iter] = method.call(val);
+                }
+            });
+            return obj;
+        },
 		apply: function(tvar) {
 			/* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
 			var i,
 				tagMethod,
 				tagArgument,
 				safe = false,
-				filterList = tvar.split('|'),
-				tvar = filterList[0];
+				filterList = tvar.split('|');
+			tvar = filterList[0];
 				
 			for (i = 1; i < filterList.length; i ++) {
 				tagMethod = mango.filters.trim(filterList[i]).split(':');
@@ -134,7 +172,7 @@
 			}
 			return tvar;
 		}
-	}
+	};
 
 	mango.tags = {
         _in_empty: [],

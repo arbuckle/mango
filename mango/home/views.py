@@ -23,6 +23,7 @@ class Home(TemplateView):
         context = {
             'plans': plans,
             'plans_empty': empties,
+            'dict': {"Key1": "Value1", 2: "Value2"},
             'numerator': 10,
             'denominator': 100,
             'fraction': 10/100.0,
