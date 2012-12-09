@@ -24,6 +24,7 @@
             {% include "mango/home/templates/includes/for_loop_array.html" %}
             {% include "mango/home/templates/includes/loop_conditions_nesting.html" %}
             {% include "mango/home/templates/includes/loop_nested_empty.html" %}
+            {% include "mango/home/templates/includes/assorted_filters.html" %}
         </div>
 
     {% endblock serverside %}
@@ -70,6 +71,10 @@
         <script type="text/template" id="loop-nested-inner-empty">
             {% include_verbatim "mango/home/templates/includes/loop_nested_empty.html" %}
         </script>
+        <script type="text/template" id="assorted-filters">
+            {% include_verbatim "mango/home/templates/includes/assorted_filters.html" %}
+        </script>
+
     {% endblock clientside %}
 
 
@@ -104,6 +109,11 @@
 
             var svu = mango.template($('#loop-nested-inner-empty').html());
             $('#DjangoClientWrap').append(svu(data));
+
+            var svu = mango.template($('#assorted-filters').html());
+            $('#DjangoClientWrap').append(svu(data));
+
+
 
         </script>
     {% endblock foot %}

@@ -1,0 +1,36 @@
+<div class="test">
+    <h5>Assorted filters.</h5>
+    <ul>
+        <li>add: {{ numerator|add:"10" }}</li>
+        <li>capfirst [list]: {{ basic_list|capfirst }}</li>
+        <li>capfirst [str]:{{ name|capfirst }} </li>
+        <li>cut: {{ name|cut:"avi" }}</li>
+        <li>default (false): {{ is_cool|default:"cool guy" }}</li>
+        <li>default (None): {{ has_coin|default:"rich guy" }}</li>
+        <li>default_if_none: {{ is_cool|default_if_none:"Mr. Cool" }}</li>
+        <li>default_if_none: {{ has_coin|default_if_none:"Mr. Rich" }}</li>
+        <li>divisibleby: {{ denominator|divisibleby:"200" }}</li>
+        <li>first (str): {{ name|first }}</li>
+        <li>first (list): {{ fruits|first }}</li>
+        <li>join: {{ fruits|join:"/" }}</li>
+        <li>last (str): {{ name|last }}</li>
+        <li>last (list): {{ fruits|last }}</li>
+        <li>length: {{ name|length }}</li>
+        <li>length_is: {{ name|length_is:"4" }}</li>
+        <li>length_is: {{ name|length_is:"5" }}</li>
+        <li>length_is: {{ name|length_is:"invalid" }}</li>
+        <li>lower: {{ phrase|lower }}</li>
+        <li>lower: {{ fruits|lower }}</li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+<!--
+        <li>linebreaksbr: {{ phrase_with_breaks|linebreaksbr }}</li>
+        <li>linebreaksbr: {{ script_injection_with_breaks|linebreaksbr }}</li>
+-->
+    </ul>
+</div>

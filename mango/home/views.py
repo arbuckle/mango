@@ -26,12 +26,17 @@ class Home(TemplateView):
             'numerator': 10,
             'denominator': 100,
             'fraction': 10/100.0,
-            'fruits': ['apple', 'banana', 'mango'],
+            'fruits': ['Apple', 'Banana', 'mango'],
             'basic_list': [1,2],
             'empty_list': [],
             'groceries': [['apple', 4], ['banana', 6], ['mango', 2]],
             'script_injection': '<script>console.log(\'Script injected\')</script>',
-            'phrase': "Welcome to the Jungle.  The Jungle."
+            'script_injection_with_breaks': '<script>\n\tconsole.log(\'Script injected\')\n</script>',
+            'phrase': "Welcome to the Jungle.  The Jungle.",
+            'phrase_with_breaks': "Welcome to the Jungle.\n\nThe\nJungle.",
+            'name': 'david',
+            'is_cool': False,
+            'has_coin': None
         }
         context.update({"json": dumps(context)})
         return context

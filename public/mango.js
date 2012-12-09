@@ -36,16 +36,68 @@
 
 
 	mango.filters = {
-		trim: function(str) {
-			/* Removes white space on either side of a string. */
+        add: function(str, arg) {
+            try {
+                return Number(str) + Number(arg);
+            } catch (e) {
+                return str + arg;
+            }
+        },
+        capfirst: function(str) {
+            if (typeof(str) !== "string") return str;
+            return str[0].toUpperCase() + str.substring(1, str.length);
+        },
+        cut: function(str, arg) {
+            return str.replace(arg, '');
+        },
+        date: function(str, arg){
+            /* TODO:  find a library to accomplish this. */
+            return str;
+        },
+        default: function(str, arg) {
+            if (!str) return arg;
+            return str;
+        },
+        default_if_none: function(str, arg) {
+            if (str === null) return arg;
+            return str;
+        },
+        divisibleby: function(str, arg) {
+            try {
+                if (Number(str) % Number(arg) === 0) return true;
+            } catch(e){}
+            return false;
+        },
+        first: function(list) {
+            return list[0];
+        },
+        join: function(list, arg) {
+            //todo: breaks when pipe is passed...
+            return list.join(arg);
+        },
+        last: function(list) {
+            return list[list.length-1];
+        },
+        length: function(str) {
+            return str.length;
+        },
+        length_is: function(str, arg) {
+            if (str.length === Number(arg)) return true;
+            return false;
+        },
+        linebreaksbr: function(str) {
+            return (str !== undefined) ? str.replace(/\n/g, '<br />'): str;
+        },
+        lower: function(str) {
+            return str.toLowerCase();
+        },
+        trim: function(str) {
 			return (str !== undefined) ? str.replace(/^\s+|\s+$/g, ''): str;
 		},
 		upper: function(str) {
-			/* Converts a string to uppercase */
 			return str.toUpperCase();
 		},
 		truncatechars: function(str, arg) {
-			/* Truncates a string to the specified length, and appends an ellipsis. */
 			arg = (str.length >= 3) ? arg - 3 : str.length;
 			return str.substr(0, arg) + '...';
 		},
@@ -57,9 +109,6 @@
 				return str;
 			}
 		},
-        length: function(str) {
-            return str.length;
-        },
 		apply: function(tvar) {
 			/* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
 			var i,
