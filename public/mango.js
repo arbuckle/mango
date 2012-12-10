@@ -142,6 +142,26 @@
         random: function(str) {
             return str[Math.floor(Math.random() * str.length)];
         },
+        slice: function(str, arg) {
+            /* javascript substr:  start pos, length of substring
+             * python substr: start pos, end pos
+             */
+            arg = arg.split(':');
+
+            //special case.  may be indicative of flawed approach below.
+            if (arg[0].length && arg[0] === arg[1])
+                return '';
+
+            // cast to 0 if null
+            arg[0] = (!arg[0].length) ? 0 : Number(arg[0]);
+            arg[1] = (!arg[1].length) ? str.length : Number(arg[1]);
+
+            // convert index if negative
+            arg[1] = (arg[1] < 0) ? (str.length) + arg[1] : arg[1];
+            arg[1] = arg[1] - arg[0]; //
+
+            return str.substr(arg[0], arg[1]);
+        },
         trim: function(str) {
 			return str.replace(/^\s+|\s+$/g, '');
 		},
@@ -188,7 +208,7 @@
 			tvar = filterList[0];
 				
 			for (i = 1; i < filterList.length; i ++) {
-				tagMethod = mango.filters.trim(filterList[i]).split(':');
+				tagMethod = mango.filters.trim(filterList[i]).split(/:(.+)/);
 				tagArgument = (tagMethod.length > 1) ? tagMethod[1] : undefined;
 				tagMethod = tagMethod[0];
 				
