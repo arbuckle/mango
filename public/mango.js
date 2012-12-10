@@ -102,7 +102,7 @@
             return false;
         },
         linebreaksbr: function(str) {
-            return (str !== undefined) ? str.replace(/\n/g, '<br />'): str;
+            return str.replace(/\n/g, '<br />');
         },
         lower: function(str) {
             if (typeof(str) !== "string" && typeof(str) !== "number") {
@@ -111,8 +111,23 @@
             }
             return str.toLowerCase();
         },
+        make_list: function(str) {
+            return String(str).split('');
+        },
+        phone2numeric: function(str) {
+            var char2number = {'a': '2', 'b': '2', 'c': '2', 'd': '3', 'e': '3', 'f': '3',
+                'g': '4', 'h': '4', 'i': '4', 'j': '5', 'k': '5', 'l': '5', 'm': '6',
+                'n': '6', 'o': '6', 'p': '7', 'q': '7', 'r': '7', 's': '7', 't': '8',
+                'u': '8', 'v': '8', 'w': '9', 'x': '9', 'y': '9', 'z': '9'
+            };
+            str = mango.filters.make_list(mango.filters.lower(str));
+            mango.each(str, function(c, i){
+                str[i] = (char2number.hasOwnProperty(c)) ? char2number[c] : c;
+            });
+            return str.join('');
+        },
         trim: function(str) {
-			return (str !== undefined) ? str.replace(/^\s+|\s+$/g, ''): str;
+			return str.replace(/^\s+|\s+$/g, '');
 		},
 		upper: function(str) {
             if (typeof(str) !== "string" && typeof(str) !== "number") {
