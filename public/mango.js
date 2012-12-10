@@ -258,7 +258,7 @@
 	};
 
 	mango.tags = {
-        _in_empty: [],
+        _for_closing_tags: [],
         comment: function() {
             return "if (false) { \n";
         },
@@ -300,6 +300,7 @@
             return "\n } \n";
         },
         for: function(args){
+            mango.tags._for_closing_tags.push('});');
             /*
               • indexOf "in" denotes the division between loop "arguments" and the loop var "variable".
               • variable.split('.') denotes whether we're looking at an array or a dict.
@@ -326,15 +327,14 @@
             if (loopVar.length > 1 && loopVar[1].toLowerCase() === 'items') {
                 /* it's a dict! Checking length for {% empty %} and opening loop. */
                 loopVar = loopVar[0];
-                ret = "c=0; for (i in " + loopVar + ") {if ("+loopVar+".hasOwnProperty(i)) {c++;}} \n";
+                ret = "c=0; \n mango.each(" + loopVar + ", function(__th, i){ \n if ("+loopVar+".hasOwnProperty(i)) {c++;}}); \n";
                 ret += "if (c > 0) { \n ";
-                ret += "for ( var " + loopArgs[0] + " in " + loopVar + ") { \n ";
-                ret += "var " + loopArgs[1] + " = " + loopVar + "[" + loopArgs[0] + "]; \n";
+                ret += "mango.each(" + loopVar + ", function(" + loopArgs[1] + ", " + loopArgs[0] + "){ \n ";
             } else {
                 loopVar = loopVar[0];
                 /* it's an array! Checking length for {% empty %} and opening loop. */
                 ret = "if (" + loopVar + ".length) { \n ";
-                ret += "for (i=0; i < " + loopVar + ".length; i ++) { \n ";
+                ret += "mango.each(" + loopVar + ", function(__th, i){ \n";
                 for (i=0; i < loopArgs.length; i ++) {
                     ret += "if (typeof(" + loopVar + "[" + i + "]) == 'object') { \n";
                     ret += "var " + loopArgs[i] + " = " + loopVar + "[i][" + i + "]; \n";
@@ -346,20 +346,17 @@
             return ret;
         },
         endfor: function() {
-            if (mango.tags._in_empty.length) {
-                mango.tags._in_empty.pop();
-                return "\n } \n";
-            } else {
-                return "\n } \n } \n";
-            }
-
+            var tag = mango.tags._for_closing_tags.pop();
+            if (tag !== "}") return tag + "}";
+            return tag;
         },
         empty: function() {
             // Every loop is wrapped in an IF condition
-            // When {% empty %} is present, an ELSE condition is populated and the mango.tags._in_empty object
+            // When {% empty %} is present, an ELSE condition is populated and the mango.tags._empty_depth object
             // is incremented to indicate that an additional closing brace for the FOR loop is not required.
-            mango.tags._in_empty.push(1);
-            return "\n } \n } else { \n";
+            var tag = mango.tags._for_closing_tags.pop();
+            mango.tags._for_closing_tags.push('}');
+            return "\n " + tag + " } else { \n";
         },
         apply_filters: function(args) {
             /* Runs through list of template filters and applies filters when | is found. */
