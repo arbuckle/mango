@@ -19,15 +19,6 @@
         <li>length_is: {{ name|length_is:"4" }}</li>
         <li>length_is: {{ name|length_is:"5" }}</li>
         <li>length_is: {{ name|length_is:"invalid" }}</li>
-        <li>lower: {{ phrase|lower }}</li>
-        <li>lower: {{ fruits|lower }}</li>
-        <!--<li>lower: {{ groceries|lower }}</li>-->
-        <li>lower: {{ dict|lower }}</li>
-        <li>upper: {{ phrase|upper }}</li>
-        <li>upper: {{ fruits|upper }}</li>
-        <!--<li>upper: {{ groceries|upper }}</li>
-        <li>upper: {{ dict|upper }}</li>
-        <li>make_list: {{ phrase|make_list }}</li>-->
         <li>phone2numeric: {{ phrase|phone2numeric }}</li>
         <li>You have {{ num_cherries }} cherr{{ num_cherries|pluralize:"y,ies" }}</li>
         <li>You have {{ num_cherries_1 }} cherr{{ num_cherries_1|pluralize:"y,ies" }}.</li>
@@ -55,10 +46,16 @@
         <li>urlencode: {{ url|urlencode:"" }}</li>
         <li>urlencode: {{ url|urlencode:"/" }}</li>
         <li>urlencode: {{ url|urlencode:":" }}</li>
-
-        <!--
+        <li>lower: {{ phrase|lower }}</li>
+        <li>lower: {{ fruits|lower }}</li>
+        <li>lower: {{ groceries|lower }}</li>
+        <li>lower: {{ dict|lower }}</li>
+        <li>upper: {{ phrase|upper }}</li>
+        <li>upper: {{ fruits|upper }}</li>
+        <li>upper: {{ groceries|upper }}</li>
+        <li>upper: {{ dict|upper }}</li>
+        <li>make_list: {{ phrase|make_list }}</li>
         <li>linebreaksbr: {{ phrase_with_breaks|linebreaksbr }}</li>
         <li>linebreaksbr: {{ script_injection_with_breaks|linebreaksbr }}</li>
--->
     </ul>
 </div>
