@@ -198,24 +198,24 @@
             }
             return str;
         },
-		truncatechars: function(str, arg) {
-			arg = (str.length >= 3) ? arg - 3 : str.length;
-			return str.substr(0, arg) + '...';
-		},
+        truncatechars: function(str, arg) {
+            arg = (str.length >= 3) ? arg - 3 : str.length;
+            return str.substr(0, arg) + '...';
+        },
         truncatewords: function(str, arg) {
             str = str.replace(/\n/g, '').split(' ');
             str = str.slice(0, arg);
             str = (str.length >= 1) ? str.join(' ') + ' ...' : '...';
             return str;
         },
-		escape: function(str) {
-			/* Escapes <, >, ', ", and & into HTML character entities. */
-			if (typeof(str) === "string") {
-				return str.replace(htmlEscaper, function(match) {return htmlEscapes[match]; });
-			} else {
-				return str;
-			}
-		},
+        escape: function(str) {
+            /* Escapes <, >, ', ", and & into HTML character entities. */
+            if (typeof(str) === "string") {
+                return str.replace(htmlEscaper, function(match) {return htmlEscapes[match]; });
+            } else {
+                return str;
+            }
+        },
         _traverse_obj_and_apply_string_method: function(obj, method) {
             /* Probably a too-specific implementation of map.  Traverses an object and all child objects and
                calls the specified 'method'. */
@@ -230,69 +230,69 @@
             });
             return obj;
         },
-		apply: function(tvar) {
-			/* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
-			var i,
-				tagMethod,
-				tagArgument,
-				safe = false,
-				filterList = tvar.split('|');
-			tvar = filterList[0];
-				
-			for (i = 1; i < filterList.length; i ++) {
-				tagMethod = mango.filters.trim(filterList[i]).split(/:(.+)/);
-				tagArgument = (tagMethod.length > 1) ? tagMethod[1] : undefined;
-				tagMethod = tagMethod[0];
-				
-				if (mango.filters[tagMethod] !== undefined && tagMethod !== 'safe') {
-					tvar = 'mango.filters.' + tagMethod + '(' + tvar + ', ' + tagArgument + ')';
-				} else if (tagMethod === 'safe') {
-					safe = true;
-				}
-			}
-			if (!safe) {
-				tvar = 'mango.filters.escape(' + tvar + ')';
-			}
-			return tvar;
-		}
+        apply: function(tvar) {
+            /* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
+            var i,
+                tagMethod,
+                tagArgument,
+                safe = false,
+                filterList = tvar.split('|');
+            tvar = filterList[0];
+
+            for (i = 1; i < filterList.length; i ++) {
+                tagMethod = mango.filters.trim(filterList[i]).split(/:(.+)/);
+                tagArgument = (tagMethod.length > 1) ? tagMethod[1] : undefined;
+                tagMethod = tagMethod[0];
+
+                if (mango.filters[tagMethod] !== undefined && tagMethod !== 'safe') {
+                    tvar = 'mango.filters.' + tagMethod + '(' + tvar + ', ' + tagArgument + ')';
+                } else if (tagMethod === 'safe') {
+                    safe = true;
+                }
+            }
+            if (!safe) {
+                tvar = 'mango.filters.escape(' + tvar + ')';
+            }
+            return tvar;
+        }
 	};
 
 	mango.tags = {
         _in_empty: [],
-		if: function(args) {
-			// 1 = 1, 1 = 2...  search for operators and grab the values on either side?  
-			// better yet:  find and replace and, or, not, etc with: && || !
-			var i;
-			for (i = 0; i < args.length; i ++) {
-				switch(args[i]) {
-					case "and":
-						args[i] = '&&';
-						break;
-					case "or":
-						args[i] = '||';
-						break;
-					case "not":
-						args[i] = '!';
-						break;
-					case "True":
-						args[i] = true;
-						break;
-					case "False":
-						args[i] = false;
-						break;
-				}
-			}
-			return "if (" + args.join(' ') + ") { \n";
-		},
+        if: function(args) {
+            // 1 = 1, 1 = 2...  search for operators and grab the values on either side?
+            // better yet:  find and replace and, or, not, etc with: && || !
+            var i;
+            for (i = 0; i < args.length; i ++) {
+                switch(args[i]) {
+                    case "and":
+                        args[i] = '&&';
+                        break;
+                    case "or":
+                        args[i] = '||';
+                        break;
+                    case "not":
+                        args[i] = '!';
+                        break;
+                    case "True":
+                        args[i] = true;
+                        break;
+                    case "False":
+                        args[i] = false;
+                        break;
+                }
+            }
+            return "if (" + args.join(' ') + ") { \n";
+        },
         elif: function(args) {
           return "\n } else " + mango.tags.if(args);
         },
-		else: function() {
-			return "\n } else { \n";
-		},
-		endif: function() {
-			return "\n } \n";
-		},
+        else: function() {
+            return "\n } else { \n";
+        },
+        endif: function() {
+            return "\n } \n";
+        },
         for: function(args){
             /*
               • indexOf "in" denotes the division between loop "arguments" and the loop var "variable".
@@ -366,26 +366,26 @@
             }
             return args;
         },
-		apply: function(tagStatement) {
-			/* accepts a template tag, normalizes it, and executes the method of mango.tags for the specified filter. */
-			// pad out conditional statements, remove redundant white space and split
-			tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
-					.replace('>=', ' >= ').replace('<=', ' <= ')
-					.replace('==', ' == ').replace('!=', ' != ');
-			tagStatement = mango.filters.trim(tagStatement);
-			tagStatement = tagStatement.replace(/ +/gi, ' ').split(' ');
-			
-			var tag = tagStatement.shift(),
-				args = tagStatement;
+        apply: function(tagStatement) {
+            /* accepts a template tag, normalizes it, and executes the method of mango.tags for the specified filter. */
+            // pad out conditional statements, remove redundant white space and split
+            tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
+                    .replace('>=', ' >= ').replace('<=', ' <= ')
+                    .replace('==', ' == ').replace('!=', ' != ');
+            tagStatement = mango.filters.trim(tagStatement);
+            tagStatement = tagStatement.replace(/ +/gi, ' ').split(' ');
+
+            var tag = tagStatement.shift(),
+                args = tagStatement;
             args = mango.tags.apply_filters(args); //TODO:  this may be inappropriate for certain tags
 
-			if (mango.tags[tag] !== undefined) {
-				return mango.tags[tag](args);
-			} else {
-				return '';
-			}
-			
-		}
+            if (mango.tags[tag] !== undefined) {
+                return mango.tags[tag](args);
+            } else {
+                return '';
+            }
+
+        }
 	}
 	
     mango.templateSettings = {
