@@ -259,6 +259,12 @@
 
 	mango.tags = {
         _in_empty: [],
+        comment: function() {
+            return "if (false) { \n";
+        },
+        endcomment: function() {
+            return " } \n";
+        },
         if: function(args) {
             // 1 = 1, 1 = 2...  search for operators and grab the values on either side?
             // better yet:  find and replace and, or, not, etc with: && || !
