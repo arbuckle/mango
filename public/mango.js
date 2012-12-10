@@ -190,6 +190,12 @@
 			arg = (str.length >= 3) ? arg - 3 : str.length;
 			return str.substr(0, arg) + '...';
 		},
+        truncatewords: function(str, arg) {
+            str = str.replace(/\n/g, '').split(' ');
+            str = str.slice(0, arg);
+            str = (str.length >= 1) ? str.join(' ') + ' ...' : '...';
+            return str;
+        },
 		escape: function(str) {
 			/* Escapes <, >, ', ", and & into HTML character entities. */
 			if (typeof(str) === "string") {

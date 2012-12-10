@@ -46,7 +46,11 @@
         <li>slice: {{ name|slice:"-1:-1" }}</li>
         <li>slugify: {{ phrase|slugify }}</li>
         <li>title: {{ phrase|title }}</li>
-        <li></li>
+        <li>truncatechars: {{ phrase|truncatechars:"9" }}</li>
+        <li>truncatewords: {{ phrase|truncatewords:"3" }}</li>
+        <li>truncatewords: {{ phrase|truncatewords:"0" }}</li>
+        <li>truncatewords: {{ name|truncatewords:"3" }}</li>
+        <li>truncatewords: {{ name|truncatewords:"0" }}</li>
         <li></li>
         <li></li>
         <li></li>
