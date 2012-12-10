@@ -162,6 +162,10 @@
 
             return str.substr(arg[0], arg[1]);
         },
+        slugify: function(str) {
+            var allowed = /[^\w\s-]/g;
+            return str.toLowerCase().replace(/ +/g, ' ').replace(/ /g, '-').replace(allowed, '');
+        },
         trim: function(str) {
 			return str.replace(/^\s+|\s+$/g, '');
 		},
