@@ -51,13 +51,11 @@
         <li>truncatewords: {{ phrase|truncatewords:"0" }}</li>
         <li>truncatewords: {{ name|truncatewords:"3" }}</li>
         <li>truncatewords: {{ name|truncatewords:"0" }}</li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
+        <li>urlencode: {{ url|urlencode }}</li>
+        <li>urlencode: {{ url|urlencode:"" }}</li>
+        <li>urlencode: {{ url|urlencode:"/" }}</li>
+        <li>urlencode: {{ url|urlencode:":" }}</li>
+
         <!--
         <li>linebreaksbr: {{ phrase_with_breaks|linebreaksbr }}</li>
         <li>linebreaksbr: {{ script_injection_with_breaks|linebreaksbr }}</li>

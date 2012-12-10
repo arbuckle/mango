@@ -41,6 +41,7 @@ class Home(TemplateView):
             'num_cherries': 2,
             'num_cherries_1': 1,
             'num_walruses': 3,
+            'url': 'http://www.example.com/',
         }
         context.update({"json": dumps(context)})
         return context

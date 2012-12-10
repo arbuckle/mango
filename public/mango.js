@@ -186,6 +186,18 @@
             }
 			return str.toUpperCase();
 		},
+        urlencode: function(str, arg) {
+            str = encodeURIComponent(str);
+            arg = (arg === undefined) ? '/' : arg;
+            if (arg && arg.length) {
+                arg = arg.split("");
+                mango.each(arg, function(val){
+                    var re = new RegExp(encodeURIComponent(val), 'g');
+                    str = str.replace(re, val);
+                });
+            }
+            return str;
+        },
 		truncatechars: function(str, arg) {
 			arg = (str.length >= 3) ? arg - 3 : str.length;
 			return str.substr(0, arg) + '...';
