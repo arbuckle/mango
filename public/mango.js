@@ -169,6 +169,16 @@
         trim: function(str) {
 			return str.replace(/^\s+|\s+$/g, '');
 		},
+        title: function(str) {
+            str = str.split(' ');
+            mango.each(str, function(val, i) {
+                try {
+                    val = mango.filters.capfirst(val);
+                } catch (e) {}
+                str[i] = val;
+            });
+            return str.join(' ');
+        },
 		upper: function(str) {
             if (typeof(str) !== "string" && typeof(str) !== "number") {
                 str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toUpperCase);
