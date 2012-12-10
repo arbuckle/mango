@@ -139,6 +139,9 @@
             if (str === 1) return singular;
             return plural;
         },
+        random: function(str) {
+            return str[Math.floor(Math.random() * str.length)];
+        },
         trim: function(str) {
 			return str.replace(/^\s+|\s+$/g, '');
 		},
