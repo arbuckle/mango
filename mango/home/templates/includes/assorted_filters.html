@@ -29,12 +29,24 @@
         <li>upper: {{ dict|upper }}</li>
         <li>make_list: {{ phrase|make_list }}</li>-->
         <li>phone2numeric: {{ phrase|phone2numeric }}</li>
+        <li>You have {{ num_cherries }} cherr{{ num_cherries|pluralize:"y,ies" }}</li>
+        <li>You have {{ num_cherries_1 }} cherr{{ num_cherries_1|pluralize:"y,ies" }}.</li>
+        <li>You have {{ num_walruses }} walrus{{ num_walruses|pluralize:"es" }}.</li>
+        <li>You have {{ num_cherries_1 }} walrus{{ num_cherries_1|pluralize:"es" }}.</li>
+        <li>You have {{ numerator }} message{{ numerator|pluralize }}.</li>
         <li></li>
         <li></li>
         <li></li>
         <li></li>
         <li></li>
-<!--
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <!--
         <li>linebreaksbr: {{ phrase_with_breaks|linebreaksbr }}</li>
         <li>linebreaksbr: {{ script_injection_with_breaks|linebreaksbr }}</li>
 -->

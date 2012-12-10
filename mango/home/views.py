@@ -37,7 +37,10 @@ class Home(TemplateView):
             'phrase_with_breaks': "Welcome to the Jungle.\n\nThe\nJungle.",
             'name': 'david',
             'is_cool': False,
-            'has_coin': None
+            'has_coin': None,
+            'num_cherries': 2,
+            'num_cherries_1': 1,
+            'num_walruses': 3,
         }
         context.update({"json": dumps(context)})
         return context

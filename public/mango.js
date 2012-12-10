@@ -126,6 +126,19 @@
             });
             return str.join('');
         },
+        pluralize: function(str, arg) {
+            var singular = '',
+                plural = 's';
+            if (arg !== undefined && arg.indexOf(',') !== -1) {
+                arg = arg.split(',');
+                singular = arg[0].replace(',','');
+                plural = arg[1].replace(',','');
+            } else if (arg !== undefined) {
+                plural = arg;
+            }
+            if (str === 1) return singular;
+            return plural;
+        },
         trim: function(str) {
 			return str.replace(/^\s+|\s+$/g, '');
 		},
