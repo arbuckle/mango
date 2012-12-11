@@ -268,7 +268,10 @@
             index = (index === max) ? 0 : index += 1;
             console.log(args[index], index, max, args);
             return args[index];
-        }
+        };
+        this.get_current = function() {
+            return args[index];
+        };
     };
     mango._cycles = {};
 
@@ -288,20 +291,22 @@
              * */
             var ret,
                 cycle,
-                cycle_name = args.join(',');
+                cycle_name = args.join(','),
+                ctx_var = false;
             mango._cycles[cycle_name] = mango._cycles[cycle_name] || new mango.cycle(args);
             cycle = mango._cycles[cycle_name];
 
             ret = 'var __cycle = mango._cycles["' + cycle_name + '"]; \n';
-
             if (cycle.ctx_var) {
-                /* assign the cycle variable.  yes this is a duplicate assignment... */
-                ret += '\n var ' + cycle.ctx_var + ' = eval(__cycle.get_next());\n';
+                ret += '\n var ' + cycle.ctx_var + ' = eval(mango.filters.apply(__cycle.get_next()));\n';
+                ctx_var = true;
             }
-
-            /* print the cycle variable. */
-            ret += "\n__p+='";
-            ret += "'+\n((__t=(" + 'eval(__cycle.get_next())' + "))==null?'':__t)+\n'";
+            ret +=  "\n__p+='";
+            if (ctx_var) {
+                ret += "'+\n((__t=(" + 'eval(mango.filters.apply(__cycle.get_current()))' + "))==null?'':__t)+\n'";
+            } else {
+                ret += "'+\n((__t=(" + 'eval(mango.filters.apply(__cycle.get_next()))' + "))==null?'':__t)+\n'";
+            }
             ret += "';\n";
             return ret;
         },
@@ -484,7 +489,7 @@
 			source + "return __p;\n";
 
 		try {
-            //console.log(source);
+            console.log(source);
 			var render = new Function(undefined || 'obj', 'mango', source);
 		} catch (e) {
 			e.source = source;
