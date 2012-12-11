@@ -256,6 +256,21 @@
             return tvar;
         }
     };
+    mango.cycle = function(args) {
+        if (args.indexOf('as') !== -1) {
+            this.ctx_var = args.pop();
+            args.pop();
+        }
+        var index = -1,
+            max = args.length - 1;
+
+        this.get_next = function(){
+            index = (index === max) ? 0 : index += 1;
+            console.log(args[index], index, max, args);
+            return args[index];
+        }
+    };
+    mango._cycles = {};
 
 	mango.tags = {
         _for_closing_tags: [],
@@ -266,7 +281,29 @@
             return " } \n";
         },
         cycle: function(args) {
-            console.log(args);
+            /* pure, unadulterated, insanity.
+             * we declare a new instance of mango.cycle and insert it into a dict where
+             * the key is equivalent to the chained arguments for the cycle tag.  then, we declare the
+             * cycle object inline and call it.
+             * */
+            var ret,
+                cycle,
+                cycle_name = args.join(',');
+            mango._cycles[cycle_name] = mango._cycles[cycle_name] || new mango.cycle(args);
+            cycle = mango._cycles[cycle_name];
+
+            ret = 'var __cycle = mango._cycles["' + cycle_name + '"]; \n';
+
+            if (cycle.ctx_var) {
+                /* assign the cycle variable.  yes this is a duplicate assignment... */
+                ret += '\n var ' + cycle.ctx_var + ' = eval(__cycle.get_next());\n';
+            }
+
+            /* print the cycle variable. */
+            ret += "\n__p+='";
+            ret += "'+\n((__t=(" + 'eval(__cycle.get_next())' + "))==null?'':__t)+\n'";
+            ret += "';\n";
+            return ret;
         },
         if: function(args) {
             // 1 = 1, 1 = 2...  search for operators and grab the values on either side?

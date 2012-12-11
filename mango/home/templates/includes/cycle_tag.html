@@ -1,0 +1,21 @@
+<div class="test">
+    <h5>Cycle Tag.</h5>
+    Cycle tag used on its own, and within an array.<br>
+
+    {% for item in longer_list %}
+        x {% cycle name oth_name as el_cycle%}<br>
+        {{ el_cycle }}<br>
+    {% endfor %}
+
+    {% for item in longer_list %}
+        y {% cycle 'a' 'b' 'c' %}
+    {% endfor %}
+<br>
+
+    {% for item in longer_list %}
+        {% cycle 'a' 'b' 'c' as le_cycle %}
+        {{ le_cycle }},{{ le_cycle }}
+    {% endfor %}
+
+</div>
+

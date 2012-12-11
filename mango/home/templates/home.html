@@ -25,10 +25,10 @@
             {% include "mango/home/templates/includes/loop_conditions_nesting.html" %}
             {% include "mango/home/templates/includes/loop_nested_empty.html" %}
             {% include "mango/home/templates/includes/comment_tag.html" %}
+            {% include "mango/home/templates/includes/cycle_tag.html" %}
 
 
-
-            {% include "mango/home/templates/includes/assorted_filters.html" %}
+            {# include "mango/home/templates/includes/assorted_filters.html" #}
         </div>
 
     {% endblock serverside %}
@@ -80,6 +80,10 @@
             {% include_verbatim "mango/home/templates/includes/comment_tag.html" %}
         </script>
 
+        <script type="text/template" id="cycle_tag">
+            {% include_verbatim "mango/home/templates/includes/cycle_tag.html" %}
+        </script>
+
         <script type="text/template" id="assorted-filters">
             {% include_verbatim "mango/home/templates/includes/assorted_filters.html" %}
         </script>
@@ -122,8 +126,11 @@
             var svu = mango.template($('#comment_tag').html());
             $('#DjangoClientWrap').append(svu(data));
 
-            var svu = mango.template($('#assorted-filters').html());
+            var svu = mango.template($('#cycle_tag').html());
             $('#DjangoClientWrap').append(svu(data));
+
+            var svu = mango.template($('#assorted-filters').html());
+            //$('#DjangoClientWrap').append(svu(data));
 
 
 
