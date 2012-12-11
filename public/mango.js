@@ -51,7 +51,7 @@
         }
     };
 
-	mango.filters = {
+    mango.filters = {
         add: function(str, arg) {
             try {
                 return Number(str) + Number(arg);
@@ -167,8 +167,8 @@
             return str.toLowerCase().replace(/ +/g, ' ').replace(/ /g, '-').replace(allowed, '');
         },
         trim: function(str) {
-			return str.replace(/^\s+|\s+$/g, '');
-		},
+            return str.replace(/^\s+|\s+$/g, '');
+        },
         title: function(str) {
             str = str.split(' ');
             mango.each(str, function(val, i) {
@@ -179,13 +179,13 @@
             });
             return str.join(' ');
         },
-		upper: function(str) {
+        upper: function(str) {
             if (typeof(str) !== "string" && typeof(str) !== "number") {
                 str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toUpperCase);
                 return str;
             }
-			return str.toUpperCase();
-		},
+            return str.toUpperCase();
+        },
         urlencode: function(str, arg) {
             str = encodeURIComponent(str);
             arg = (arg === undefined) ? '/' : arg;
@@ -255,7 +255,7 @@
             }
             return tvar;
         }
-	};
+    };
 
 	mango.tags = {
         _for_closing_tags: [],
@@ -264,6 +264,9 @@
         },
         endcomment: function() {
             return " } \n";
+        },
+        cycle: function(args) {
+            console.log(args);
         },
         if: function(args) {
             // 1 = 1, 1 = 2...  search for operators and grab the values on either side?
@@ -389,13 +392,13 @@
             }
 
         }
-	}
+	};
 	
     mango.templateSettings = {
         comment: /{#([\s\S]+?)#}/g,
         tag: /{%([\s\S]+?)%}/g,
         tvar: /{{([\s\S]+?)}}/g
-    }
+    };
     mango.template = function(text, data, settings) {
         if (settings === undefined) {
             settings = mango.templateSettings;
@@ -429,7 +432,7 @@
 		        source += "';\n" + tag + "\n__p+='";
             }
             if (comment) {
-                console.log('template comment', comment);
+                /* this is an easy one.  do nothing. */
             }
             index = offset + match.length;
             return match;
@@ -444,7 +447,7 @@
 			source + "return __p;\n";
 
 		try {
-            console.log(source);
+            //console.log(source);
 			var render = new Function(undefined || 'obj', 'mango', source);
 		} catch (e) {
 			e.source = source;
