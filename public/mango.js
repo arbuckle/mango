@@ -257,7 +257,42 @@
         }
     };
     mango.cycle = function(args) {
+        /*
+         * This function is used by the template to create a {% cycle %} object.
+         *
+         *
+         * Because args is passed in as a comma-separated string, when a filter is used, the comma-separated arguments
+         * prevent the simple use of args.split(',');
+         * In this case, we search the args string for any string matching "mango.[WILDCARD])," and swap any matches
+         * in args out with placeholders.  After the args has been split, the placeholders are replaced with their
+         * appropriate filter calls.
+         */
+        var i,
+            args_tmp = [];
+        if (args.indexOf('mango.filters') !== -1) {
+            var mangoRe = /mango\..+?\),/gi,
+                filter_calls = args.match(mangoRe);
+            mango.each(filter_calls, function(val, idx) {
+                args = args.replace(val, '__filter_idx_' + idx + ',');
+            });
+            args = args.split(',');
+            mango.each(args, function(val, idx) {
+                if (val.indexOf('__filter_idx_') !== -1) {
+                    val = val.replace('__filter_idx_', '');
+                    val = filter_calls[Number(val)];
+                    args[idx] = val.substr(0, val.length-1);
+                }
+            });
+        } else {
+            args = args.split(',');
+        }
+
+        /* indicates assignment to a context var */
         if (args.indexOf('as') !== -1) {
+            if (args[args.length-1] === 'silent') {
+                this.silent = true;
+                args.pop();
+            }
             this.ctx_var = args.pop();
             args.pop();
         }
@@ -266,14 +301,15 @@
 
         this.get_next = function(){
             index = (index === max) ? 0 : index += 1;
-            console.log(args[index], index, max, args);
             return args[index];
         };
-        this.get_current = function() {
+        this.get_current = function(is_tag) {
+            if (is_tag && this.silent) {
+                return '';
+            }
             return args[index];
         };
     };
-    mango._cycles = {};
 
 	mango.tags = {
         _for_closing_tags: [],
@@ -286,27 +322,29 @@
         cycle: function(args) {
             /* pure, unadulterated, insanity.
              * we declare a new instance of mango.cycle and insert it into a dict where
-             * the key is equivalent to the chained arguments for the cycle tag.  then, we declare the
-             * cycle object inline and call it.
+             * the key is equivalent to either the chained arguments for the cycle tag, or the 'as' value.
+             * then, we call the cycle object and evaluate its result.
              * */
-            var ret,
-                cycle,
-                cycle_name = args.join(','),
-                ctx_var = false;
-            mango._cycles[cycle_name] = mango._cycles[cycle_name] || new mango.cycle(args);
-            cycle = mango._cycles[cycle_name];
+            var cycle,
+                cycle_var = (args.indexOf('as') !== -1) ? (args[args.length-1] === 'silent') ? args[args.length-2] : args[args.length-1] : false,
+                cycle_name = cycle_var || args.join(','),
+                ret = '';
 
-            ret = 'var __cycle = mango._cycles["' + cycle_name + '"]; \n';
-            if (cycle.ctx_var) {
-                ret += '\n var ' + cycle.ctx_var + ' = eval(mango.filters.apply(__cycle.get_next()));\n';
-                ctx_var = true;
+            /* Instantiating a new mango.cycle object in the template, if one doesn't already exist. */
+            ret += 'obj._cycles["' + cycle_name + '"] = obj._cycles["' + cycle_name + '"] || new mango.cycle("' + args + '");\n';
+            ret += 'var __cycle = obj._cycles["' + cycle_name + '"]; \n';
+            ret += '__cycle.get_next(); \n';
+
+            /* declaring cycle_var if it exists. This is used so that loop-local {{ var }} references have an object to call. */
+            if (cycle_name[0] !== '\'' && cycle_name[0] !== '"') {
+                ret += ' if (__cycle.ctx_var) { \n';
+                ret += '\t var ' + cycle_name + ' = eval(__cycle.get_current()); \n';
+                ret += ' } \n';
             }
+
+            /* writing the cycle var to the template */
             ret +=  "\n__p+='";
-            if (ctx_var) {
-                ret += "'+\n((__t=(" + 'eval(mango.filters.apply(__cycle.get_current()))' + "))==null?'':__t)+\n'";
-            } else {
-                ret += "'+\n((__t=(" + 'eval(mango.filters.apply(__cycle.get_next()))' + "))==null?'':__t)+\n'";
-            }
+            ret += "'+\n((__t=(" + 'eval(__cycle.get_current(true))' + "))==null?'':__t)+\n'";
             ret += "';\n";
             return ret;
         },
@@ -456,8 +494,7 @@
         // compiling the template source
         var index = 0;
         var source = "__p+='";
-        source += "';\n var i; \n__p+='"; /* declare i for loops */
-        source += "';\n var c; \n__p+='"; /* declare c for dict counters */
+        source += "';\n" + 'obj._cycles = {};' + "\n__p+='"; /* gross! */
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {
             "use strict";
@@ -489,7 +526,6 @@
 			source + "return __p;\n";
 
 		try {
-            console.log(source);
 			var render = new Function(undefined || 'obj', 'mango', source);
 		} catch (e) {
 			e.source = source;

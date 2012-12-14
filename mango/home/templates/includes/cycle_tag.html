@@ -3,7 +3,7 @@
     Cycle tag used on its own, and within an array.<br>
 
     {% for item in longer_list %}
-        x {% cycle name|upper oth_name as el_cycle%}<br>
+        x {% cycle name|lower oth_name|upper as el_cycle%}<br>
         {{ el_cycle }}<br>
     {% endfor %}
 
@@ -11,11 +11,22 @@
         y {% cycle 'alert(1)' 'b' 'c' %}
     {% endfor %}
 <br>
+    {% cycle 'row1'|upper 'row2' 'row3' as rowcolors silent %}<br>
+    {% cycle rowcolors %}<br>
 
     {% for item in longer_list %}
         {% cycle 'a' 'b' 'c' as le_cycle %}
         {{ le_cycle }},{{ le_cycle }}
+        {% cycle rowcolors %}<br>
+        {{ rowcolors }}        {{ rowcolors }}
+        {{ rowcolors }}
+
+
     {% endfor %}
 
+<br>
+    {% cycle rowcolors %}<br>
+    {% cycle rowcolors %}<br>
+    {% cycle rowcolors %}<br>
 </div>
 
