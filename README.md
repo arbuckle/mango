@@ -1,19 +1,26 @@
 mango.js
 =====
-
 DRY client-side templates for Django.
+-------------------------------------
 
-Mango.js uses your existing Django templates and compiles them into functional Javascript templates.
+**This project is very much incomplete.**
+
+Mango.js is (intended to be):
+- A Javascript rendering engine that compiles your existing Django templates into callable Javascript objects.
+- Feature-complete, with out-of-the-box support for all of Django's flow-control and conditional syntax.
+- Easily extendable, so that implementing custom tags and filters is a painless process.
 
 When you render a view's context to a JSON object, and pass that object to a mango.js template, you get the exact same
-result as you would had you passed that context to a Django template.  Not only does mango.js eliminate the need to
-learn the hot new client-side template language of the day (sorry!), but it also eliminates the need to author and
-maintain multiple distinct branches of front-end code.
+result as you would had you passed that context to a Django template.
+Not only does mango.js eliminate the need to learn the hot new client-side template language of the day (sorry!), but
+it also eliminates the need to author and maintain multiple distinct branches of front-end code.
 
-**This library is very much incomplete.**
 
 Usage is simple.
 ---------------
+*In your app:*
+    implement a template tag that includes a template without rendering its contents
+
 *In your views:*
 
     context.update({"json": dumps(context)})
@@ -31,26 +38,17 @@ Usage is simple.
     </script>
 
 
-
-Basically,
-- A Javascript rendering engine to convert Django templates into callable Javascript objects.
-- Out-of-the-box support for all of Django's flow-control and conditional syntax.
-- Easily extendable so that template tags can be implemented in Javascript, though the 
-expectation is that JSON payloads will use server-side template tags to prepare data.
-- A template filter similar to {% verbatim %}, which does parse {% include %} filters.
-
-
 TODOS:
-{% filter %}
-{% firstof %}
-{% ifchanged %}
-{% ifequal %}
-{% ifnotequal %}
-{% now %}
-{% spaceless %}
-{% url %}
-{% verbatim %}
-Date filters.
-Better include_verbatim tag.
-Docstring comments that are basically links to Django's documentation
-Use it in something bigger than a toy project
+-{% filter %}
+-{% firstof %}
+-{% ifchanged %}
+-{% ifequal %}
+-{% ifnotequal %}
+-{% now %}
+-{% spaceless %}
+-{% url %}
+-{% verbatim %}
+-Date filters.
+-Better include_verbatim tag.
+-Docstring comments that are basically links to Django's documentation
+-Use it in something bigger than a toy project
