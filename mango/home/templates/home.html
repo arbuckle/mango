@@ -15,6 +15,7 @@
         <div id="ServerWrap">
         	These are server side rendered templates, using Django's built in tags and filters.
         	<hr>
+
             {% include "mango/home/templates/includes/var_simple.html" %}
             {% include "mango/home/templates/includes/var_filter.html" %}
             {% include "mango/home/templates/includes/var_safe.html" %}
@@ -26,9 +27,8 @@
             {% include "mango/home/templates/includes/loop_nested_empty.html" %}
             {% include "mango/home/templates/includes/comment_tag.html" %}
             {% include "mango/home/templates/includes/cycle_tag.html" %}
-
-
-            {# include "mango/home/templates/includes/assorted_filters.html" #}
+            {% include "mango/home/templates/includes/cycle_tag.html" %}
+            {% include "mango/home/templates/includes/assorted_filters.html" %}
         </div>
 
     {% endblock serverside %}
@@ -99,38 +99,41 @@
             var svu = mango.template($('#simple-variable-usage').html());
             $('#DjangoClientWrap').append(svu(data));
 
-			var svu = mango.template($('#variable-with-template-filter').html());
-			$('#DjangoClientWrap').append(svu(data));
+			var vwtf = mango.template($('#variable-with-template-filter').html());
+			$('#DjangoClientWrap').append(vwtf(data));
 
-			var svu = mango.template($('#script-injection').html());
-			$('#DjangoClientWrap').append(svu(data));
-			
-			var svu = mango.template($('#basic-conditional').html());
-			$('#DjangoClientWrap').append(svu(data));
+			var si = mango.template($('#script-injection').html());
+			$('#DjangoClientWrap').append(si(data));
 
-            var svu = mango.template($('#conditions_with_variables').html());
-            $('#DjangoClientWrap').append(svu(data));
+			var bc = mango.template($('#basic-conditional').html());
+			$('#DjangoClientWrap').append(bc(data));
 
-            var svu = mango.template($('#conditions_elif').html());
-            $('#DjangoClientWrap').append(svu(data));
+            var cwv = mango.template($('#conditions_with_variables').html());
+            $('#DjangoClientWrap').append(cwv(data));
 
-            var svu = mango.template($('#for_loop_array').html());
-            $('#DjangoClientWrap').append(svu(data));
+            var ce = mango.template($('#conditions_elif').html());
+            $('#DjangoClientWrap').append(ce(data));
 
-            var svu = mango.template($('#nested-conditions-and-loops').html());
-            $('#DjangoClientWrap').append(svu(data));
+            var fla = mango.template($('#for_loop_array').html());
+            $('#DjangoClientWrap').append(fla(data));
 
-            var svu = mango.template($('#loop-nested-inner-empty').html());
-            $('#DjangoClientWrap').append(svu(data));
+            var ncl = mango.template($('#nested-conditions-and-loops').html());
+            $('#DjangoClientWrap').append(ncl(data));
 
-            var svu = mango.template($('#comment_tag').html());
-            $('#DjangoClientWrap').append(svu(data));
+            var lnie = mango.template($('#loop-nested-inner-empty').html());
+            $('#DjangoClientWrap').append(lnie(data));
 
-            var svu = mango.template($('#cycle_tag').html());
-            $('#DjangoClientWrap').append(svu(data));
+            var cmt = mango.template($('#comment_tag').html());
+            $('#DjangoClientWrap').append(cmt(data));
 
-            //var svu = mango.template($('#assorted-filters').html());
-            //$('#DjangoClientWrap').append(svu(data));
+            var ct = mango.template($('#cycle_tag').html());
+            $('#DjangoClientWrap').append(ct(data));
+
+            var ct2 = mango.template($('#cycle_tag').html());
+            $('#DjangoClientWrap').append(ct2(data));
+
+            var af = mango.template($('#assorted-filters').html());
+            $('#DjangoClientWrap').append(af(data));
 
 
 
