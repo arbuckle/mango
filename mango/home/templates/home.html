@@ -15,7 +15,7 @@
         <div id="ServerWrap">
         	These are server side rendered templates, using Django's built in tags and filters.
         	<hr>
-
+            {% include "mango/home/templates/includes/filter_tag.html" %}
             {% include "mango/home/templates/includes/var_simple.html" %}
             {% include "mango/home/templates/includes/var_filter.html" %}
             {% include "mango/home/templates/includes/var_safe.html" %}
@@ -39,7 +39,11 @@
             These are client side rendered template, using a Django template language parser.
             <hr>
         </div>
-        
+
+        <script type="text/template" id="filter-tag">
+            {% include_verbatim "mango/home/templates/includes/filter_tag.html" %}
+        </script>
+
         <script type="text/template" id="simple-variable-usage">
             {% include_verbatim "mango/home/templates/includes/var_simple.html" %}
         </script>
@@ -95,6 +99,9 @@
     {% block foot %}
         <script>
             {% include "mango/home/templates/json/test_data.html" %}
+
+            var ft = mango.template($('#filter-tag').html());
+            $('#DjangoClientWrap').append(ft(data));
 
             var svu = mango.template($('#simple-variable-usage').html());
             $('#DjangoClientWrap').append(svu(data));

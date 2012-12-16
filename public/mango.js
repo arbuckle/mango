@@ -164,7 +164,7 @@
         },
         slugify: function(str) {
             var allowed = /[^\w\s-]/g;
-            return str.toLowerCase().replace(/ +/g, ' ').replace(/ /g, '-').replace(allowed, '');
+            return str.toLowerCase().replace(/\n/g, '').replace(/ +/g, ' ').replace(/ /g, '-').replace(allowed, '');
         },
         trim: function(str) {
             return str.replace(/^\s+|\s+$/g, '');
@@ -230,31 +230,40 @@
             });
             return obj;
         },
-        apply: function(tvar) {
+        apply: function(tvar, tag_filters, evaluate_filters) {
             /* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
+
             var i,
                 tagMethod,
                 tagArgument,
                 safe = false,
-                filterList = tvar.split('|');
-            tvar = filterList[0];
+                filterList = (!evaluate_filters) ? tvar.split('|') : [tvar];
 
-            for (i = 1; i < filterList.length; i ++) {
+            tvar = filterList.shift();
+            tag_filters = (tag_filters === undefined) ? [] : tag_filters.split(',');
+            filterList = filterList.concat(tag_filters);
+
+            for (i = 0; i < filterList.length; i ++) {
                 tagMethod = mango.filters.trim(filterList[i]).split(/:(.+)/);
                 tagArgument = (tagMethod.length > 1) ? tagMethod[1] : undefined;
                 tagMethod = tagMethod[0];
 
-                if (mango.filters[tagMethod] !== undefined && tagMethod !== 'safe') {
+                if (mango.filters[tagMethod] !== undefined && tagMethod !== 'safe' && !evaluate_filters) {
                     tvar = 'mango.filters.' + tagMethod + '(' + tvar + ', ' + tagArgument + ')';
+                } else if (mango.filters[tagMethod] !== undefined && tagMethod !== 'safe') {
+                    tvar = mango.filters[tagMethod](tvar, tagArgument);
                 } else if (tagMethod === 'safe') {
                     safe = true;
                 }
             }
-            if (!safe) {
+            if (!safe && !evaluate_filters) {
                 tvar = 'mango.filters.escape(' + tvar + ')';
+            } else if (!safe) {
+                tvar = mango.filters.escape(tvar);
             }
             return tvar;
-        }
+        },
+        _tag_filters: []
     };
     mango.cycle = function(args) {
         /*
@@ -348,7 +357,22 @@
             ret += "';\n";
             return ret;
         },
-        if: function(args) {
+        filter: function (args) {
+            /* Wraps the template output in a closure and passes the specified filters in as arguments. */
+            args = args[0].split('|');
+            mango.filters._tag_filters = mango.filters._tag_filters.concat(args);
+            return '__p += (function(filters) {\n console.log(filters); \n \tvar __p = ""; \n';
+        },
+        endfilter: function() {
+            var ret = "\n return ((__t=(";
+            ret += " mango.filters.apply(__p, filters, true) ";
+            ret += " ))==null?'':__t ); \n";
+            ret += '})( "' + mango.filters._tag_filters + '")';
+            mango.filters._tag_filters = [];
+            return ret;
+
+        },
+        if: function (args) {
             // 1 = 1, 1 = 2...  search for operators and grab the values on either side?
             // better yet:  find and replace and, or, not, etc with: && || !
             var i;
@@ -463,7 +487,10 @@
 
             var tag = tagStatement.shift(),
                 args = tagStatement;
-            args = mango.tags.apply_filters(args); //TODO:  this may be inappropriate for certain tags
+
+            if (tag !== 'filter') {
+                args = mango.tags.apply_filters(args);
+            }
 
             if (mango.tags[tag] !== undefined) {
                 return mango.tags[tag](args);

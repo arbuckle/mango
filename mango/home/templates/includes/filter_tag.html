@@ -1,0 +1,38 @@
+<div class="test">
+    <h5>Filter Tag.</h5>
+{% filter slugify|lower %}
+    Filter tag used as a wrapper around arrays.  Nested filter tags.<br>
+    {% filter upper %}
+    {% for item in longer_list %}
+        x {% cycle name|lower oth_name|upper as el_cycle%}<br>
+        {{ el_cycle }}<br>
+    {% endfor %}
+        {% endfilter %}
+{% endfilter %}
+
+{% filter length %}
+    {% for item in longer_list %}
+        y {% cycle 'alert(1)' 'b' 'c' %}
+    {% endfor %}
+    <br>
+    {% cycle 'row1'|upper 'row2' 'row3' as rowcolors silent %}<br>
+    {% cycle rowcolors %}<br>
+
+    {% for item in longer_list %}
+        {% cycle 'a' 'b' 'c' as le_cycle %}
+        {{ le_cycle }},{{ le_cycle }}
+        {% cycle rowcolors %}<br>
+        {{ rowcolors }}        {{ rowcolors }}
+        {{ rowcolors }}
+
+
+    {% endfor %}
+{% endfilter %}
+
+{% filter slugify %}
+    <br>
+    {% cycle rowcolors %}<br>
+    {% cycle rowcolors %}<br>
+    {% cycle rowcolors %}<br>
+{% endfilter %}
+</div>
