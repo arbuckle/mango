@@ -10,6 +10,13 @@
         {% endfilter %}
 {% endfilter %}
 
+    {% filter lower %}
+        This is a test.
+        {% filter upper %}
+            This is only a test.
+        {% endfilter %}
+    {% endfilter %}
+
 {% filter length %}
     {% for item in longer_list %}
         y {% cycle 'alert(1)' 'b' 'c' %}

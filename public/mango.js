@@ -360,15 +360,14 @@
         filter: function (args) {
             /* Wraps the template output in a closure and passes the specified filters in as arguments. */
             args = args[0].split('|');
-            mango.filters._tag_filters = mango.filters._tag_filters.concat(args);
+            mango.filters._tag_filters.push(mango.filters._tag_filters.concat(args));
             return '__p += (function(filters) {\n console.log(filters); \n \tvar __p = ""; \n';
         },
         endfilter: function() {
             var ret = "\n return ((__t=(";
             ret += " mango.filters.apply(__p, filters, true) ";
             ret += " ))==null?'':__t ); \n";
-            ret += '})( "' + mango.filters._tag_filters + '")';
-            mango.filters._tag_filters = [];
+            ret += '})( "' + mango.filters._tag_filters.pop() + '")';
             return ret;
 
         },
