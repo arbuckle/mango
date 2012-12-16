@@ -164,7 +164,7 @@
         },
         slugify: function(str) {
             var allowed = /[^\w\s-]/g;
-            return str.toLowerCase().replace(/\n/g, '').replace(/ +/g, ' ').replace(/ /g, '-').replace(allowed, '');
+            return mango.filters.trim(str).toLowerCase().replace(/\n/g, '').replace(/ +/g, ' ').replace(/ /g, '-').replace(allowed, '');
         },
         trim: function(str) {
             return str.replace(/^\s+|\s+$/g, '');
@@ -258,8 +258,6 @@
             }
             if (!safe && !evaluate_filters) {
                 tvar = 'mango.filters.escape(' + tvar + ')';
-            } else if (!safe) {
-                tvar = mango.filters.escape(tvar);
             }
             return tvar;
         },
@@ -361,7 +359,7 @@
             /* Wraps the template output in a closure and passes the specified filters in as arguments. */
             args = args[0].split('|');
             mango.filters._tag_filters.push(mango.filters._tag_filters.concat(args));
-            return '__p += (function(filters) {\n console.log(filters); \n \tvar __p = ""; \n';
+            return '__p += (function(filters) {\n \tvar __p = ""; \n';
         },
         endfilter: function() {
             var ret = "\n return ((__t=(";
