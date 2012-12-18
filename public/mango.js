@@ -369,6 +369,27 @@
             return ret;
 
         },
+        firstof: function(args) {
+            /*
+             * todo:  python and javascript have different ideas of what constitutes True.
+             * specifically with regard to empty lists and dicts
+             * also:  string arguments need to be escaped.  i think this is something to handle in pending the apply fix
+             */
+
+            var l = args.length,
+                ret = '__p += (function() { \n';
+            mango.each(args, function(val, idx){
+                ret += (idx > 0) ? ' else if ' : '\t if ';
+                ret += ' (' + val + ') { \n';
+                ret += ' console.log("true: ' + val + '");\n';
+                ret += ' \t\t return ((__t=(' + val + '))==null?"":__t ); \n';
+                ret += '\t }';
+            });
+
+            ret     += '\n return "smile" ';
+            ret     +=' \n })();';
+            return ret;
+        },
         if: function (args) {
             // 1 = 1, 1 = 2...  search for operators and grab the values on either side?
             // better yet:  find and replace and, or, not, etc with: && || !
@@ -475,6 +496,8 @@
         },
         apply: function(tagStatement) {
             /* accepts a template tag, normalizes it, and executes the method of mango.tags for the specified filter. */
+            //TODO:  this dang thing passes in too many arguments if a string argument has a space!
+
             // pad out conditional statements, remove redundant white space and split
             tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
                     .replace('>=', ' >= ').replace('<=', ' <= ')
@@ -518,6 +541,8 @@
         // compiling the template source
         var index = 0;
         var source = "__p+='";
+
+        source += "';\n var False = false,\n\t True = true; \n__p+='"; /* gross! */
         source += "';\n" + 'obj._cycles = {};' + "\n__p+='"; /* gross! */
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {

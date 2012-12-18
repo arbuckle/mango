@@ -15,6 +15,7 @@
         <div id="ServerWrap">
         	These are server side rendered templates, using Django's built in tags and filters.
         	<hr>
+            {% include "mango/home/templates/includes/firstof_tag.html" %}
             {% include "mango/home/templates/includes/filter_tag.html" %}
             {% include "mango/home/templates/includes/var_simple.html" %}
             {% include "mango/home/templates/includes/var_filter.html" %}
@@ -55,7 +56,7 @@
 		<script type="text/template" id="script-injection">
             {% include_verbatim "mango/home/templates/includes/var_safe.html" %}
 		</script>
-		
+
 		<script type="text/template" id="basic-conditional">
             {% include_verbatim "mango/home/templates/includes/conditions.html" %}
         </script>
@@ -92,6 +93,10 @@
             {% include_verbatim "mango/home/templates/includes/assorted_filters.html" %}
         </script>
 
+        <script type="text/template" id="firstof-tag">
+            {% include_verbatim "mango/home/templates/includes/firstof_tag.html" %}
+        </script>
+
     {% endblock clientside %}
 
 
@@ -99,6 +104,9 @@
     {% block foot %}
         <script>
             {% include "mango/home/templates/json/test_data.html" %}
+
+            var fo = mango.template($('#firstof-tag').html());
+            $('#DjangoClientWrap').append(fo(data));
 
             var ft = mango.template($('#filter-tag').html());
             $('#DjangoClientWrap').append(ft(data));
@@ -144,5 +152,12 @@
 
 
 
+            $('#ServerWrap .test').each(function(idx, val){
+                var title = $(this).find('h5').html(),
+                    server = this.innerHTML,
+                    client = $('#DjangoClientWrap .test')[idx].innerHTML,
+                    result = (server === client) ? 'pass' : 'fail';
+                //console.log(result, title);
+            });
         </script>
     {% endblock foot %}
