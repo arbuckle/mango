@@ -6,7 +6,6 @@
  * http://underscorejs.org/underscore.js
  *
  */
-
 (function() {
     var root = this;
     var mango = function(obj) {
@@ -70,7 +69,7 @@
             /* TODO:  find a library to accomplish this. */
             return str;
         },
-        default: function(str, arg) {
+        "default": function(str, arg) {
             if (!str) return arg;
             return str;
         },
@@ -98,8 +97,7 @@
             return str.length;
         },
         length_is: function(str, arg) {
-            if (str.length === Number(arg)) return true;
-            return false;
+            return str.length === Number(arg);
         },
         linebreaksbr: function(str) {
             return str.replace(/\n/g, '<br />');
@@ -390,7 +388,7 @@
             ret     +=' \n })();';
             return ret;
         },
-        if: function (args) {
+        "if": function (args) {
             // 1 = 1, 1 = 2...  search for operators and grab the values on either side?
             // better yet:  find and replace and, or, not, etc with: && || !
             var i;
@@ -418,13 +416,13 @@
         elif: function(args) {
           return "\n } else " + mango.tags.if(args);
         },
-        else: function() {
+        "else": function() {
             return "\n } else { \n";
         },
         endif: function() {
             return "\n } \n";
         },
-        for: function(args){
+        "for": function(args){
             mango.tags._for_closing_tags.push('});');
             /*
               • indexOf "in" denotes the division between loop "arguments" and the loop var "variable".
@@ -592,5 +590,6 @@
 
 		return template;
 
-    }
-}).call(this);
+    };
+}).call(window);
+//}).call(this);
