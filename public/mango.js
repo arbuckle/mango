@@ -261,6 +261,7 @@
         },
         _tag_filters: []
     };
+
     mango.cycle = function(args) {
         /*
          * This function is used by the template to create a {% cycle %} object.
@@ -314,6 +315,26 @@
             }
             return args[index];
         };
+    };
+
+    mango.is_true = function(val) {
+        /*
+         * Returns a Pythonic truth value for the given variable.
+         * Returns false for empty arrays and dicts, uses JS truth evaluation for all other values.
+         */
+        var x,
+            c = 0;
+        if (val.constructor === Array) {
+            return (val.length) ? true : false;
+        } if (val.constructor === Object) {
+            for (x in val) {
+                if (val.hasOwnProperty(x)) {
+                    c ++;
+                }
+            }
+            return c > 0;
+        }
+        return (val) ? true : false;
     };
 
 	mango.tags = {
@@ -378,13 +399,12 @@
                 ret = '__p += (function() { \n';
             mango.each(args, function(val, idx){
                 ret += (idx > 0) ? ' else if ' : '\t if ';
-                ret += ' (' + val + ') { \n';
-                ret += ' console.log("true: ' + val + '");\n';
+                ret += ' (' + val + ' && mango.is_true(' + val + ')) { \n';
                 ret += ' \t\t return ((__t=(' + val + '))==null?"":__t ); \n';
                 ret += '\t }';
-            });
+           });
 
-            ret     += '\n return "smile" ';
+            ret     += '\n return "" ';
             ret     +=' \n })();';
             return ret;
         },
@@ -495,7 +515,11 @@
         apply: function(tagStatement) {
             /* accepts a template tag, normalizes it, and executes the method of mango.tags for the specified filter. */
             //TODO:  this dang thing passes in too many arguments if a string argument has a space!
-
+            /*
+            tagReDoubleQuote = tagStatement.replace(/( +(?=(([^"]*?"[^"]*?"[^"]*)+|[^"]*)$))/gi, '5pl1tt0k3n');
+            tagReSingleQuote = tagStatement.replace(/( +(?=(([^']*?\'[^']*?\'[^']*)+|[^']*)$))/gi, '5pl1tt0k3n');
+            tagStatement = (tagReSingleQuote.length < tagReDoubleQuote.length) ? tagReSingleQuote.split('5pl1tt0k3n') : tagReDoubleQuote.split('5pl1tt0k3n');
+            */
             // pad out conditional statements, remove redundant white space and split
             tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
                     .replace('>=', ' >= ').replace('<=', ' <= ')

@@ -32,6 +32,7 @@ class Home(TemplateView):
             'longer_list': [x for x in xrange(0,3)],
             'empty_list': [],
             'empty_dict': {},
+            'false_dict': {'one': True},
             'groceries': [['apple', 4], ['banana', 6], ['mango', 2]],
             'script_injection': '<script>console.log(\'Script injected\')</script>',
             'script_injection_with_breaks': '<script>\n\tconsole.log(\'Script injected\')\n</script>',

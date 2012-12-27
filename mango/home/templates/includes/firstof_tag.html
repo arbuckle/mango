@@ -1,12 +1,12 @@
 <div class="test">
     <h5>Firstof Tag.</h5>
-    {% firstof  false false true %}<br>
+    {% firstof  '' 'wellokthen' 'heh' %}<br>
+    {% firstof  false_dict false true %}<br>
     {% firstof  False False True %}<br>
     {% firstof  0 0 1 %}<br>
     {% firstof  0 0 script_injection %}<br>
-    {% firstof  '' 'ok' 'heh' %}<br>
     {% firstof  '' '\n' 'heh' %}<br>
     {% firstof  '' newline 'heh' %}<br>
     {% firstof  '' '' 'heh' %}<br>
-    {% firstof  is_cool has_coin empty_dict empty_list name %}<br>
+    {% firstof  is_cool has_coin empty_list empty_dict name %}<br>
 </div>
