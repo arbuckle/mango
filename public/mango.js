@@ -33,6 +33,23 @@
     var htmlEscaper = /\'|\"|>|<|&/g;
     var noMatch = /(.)^/;
 
+    mango.jsVerbatim = function(str) {
+        /* Displays a javascript string without escaping any special characters.  */
+        var displayEscapes = {
+            "\\'":    "\\'",
+            '\\"':    '\\"',
+            '\\':     '\\\\',
+            '\u2028': '\\u2028',
+            '\u2029': '\\u2029'
+            },
+            displayEscaper = /\\'|\\"|\\|\u2028|\u2029/g;
+        if (str.constructor === String) {
+            str = str.replace(displayEscaper, function(match) {return displayEscapes[match]; });
+            return str;
+        }
+        return str;
+    };
+
     mango.each = mango.forEach = function(obj, iterator, context) {
         if (obj == null) return;
         if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
@@ -389,15 +406,10 @@
 
         },
         firstof: function(args) {
-            /*
-             * todo:  python and javascript have different ideas of what constitutes True.
-             * specifically with regard to empty lists and dicts
-             * also:  string arguments need to be escaped.  i think this is something to handle in pending the apply fix
-             */
-
             var l = args.length,
                 ret = '__p += (function() { \n';
             mango.each(args, function(val, idx){
+                val = mango.jsVerbatim(val);
                 ret += (idx > 0) ? ' else if ' : '\t if ';
                 ret += ' (' + val + ' && mango.is_true(' + val + ')) { \n';
                 ret += ' \t\t return ((__t=(' + val + '))==null?"":__t ); \n';
