@@ -434,7 +434,7 @@
             return "if (" + args.join(' ') + ") { \n";
         },
         elif: function(args) {
-          return "\n } else " + mango.tags.if(args);
+          return "\n } else " + mango.tags['if'](args);
         },
         "else": function() {
             return "\n } else { \n";
@@ -514,21 +514,19 @@
         },
         apply: function(tagStatement) {
             /* accepts a template tag, normalizes it, and executes the method of mango.tags for the specified filter. */
-            //TODO:  this dang thing passes in too many arguments if a string argument has a space!
-            /*
-            tagReDoubleQuote = tagStatement.replace(/( +(?=(([^"]*?"[^"]*?"[^"]*)+|[^"]*)$))/gi, '5pl1tt0k3n');
-            tagReSingleQuote = tagStatement.replace(/( +(?=(([^']*?\'[^']*?\'[^']*)+|[^']*)$))/gi, '5pl1tt0k3n');
-            tagStatement = (tagReSingleQuote.length < tagReDoubleQuote.length) ? tagReSingleQuote.split('5pl1tt0k3n') : tagReDoubleQuote.split('5pl1tt0k3n');
-            */
-            // pad out conditional statements, remove redundant white space and split
-            tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
-                    .replace('>=', ' >= ').replace('<=', ' <= ')
-                    .replace('==', ' == ').replace('!=', ' != ');
-            tagStatement = mango.filters.trim(tagStatement);
-            tagStatement = tagStatement.replace(/ +/gi, ' ').split(' ');
 
-            var tag = tagStatement.shift(),
-                args = tagStatement;
+            var tag,
+                args,
+                smart_split_re = new RegExp(/((?:[^\s'"]*(?:(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')[^\s'"]*)+)|\S+)/gi);
+
+            tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
+                .replace('>=', ' >= ').replace('<=', ' <= ')
+                .replace('==', ' == ').replace('!=', ' != ');
+            tagStatement = mango.filters.trim(tagStatement);
+            tagStatement = tagStatement.match(smart_split_re);
+
+            tag = tagStatement.shift();
+            args = tagStatement;
 
             if (tag !== 'filter') {
                 args = mango.tags.apply_filters(args);
