@@ -1,7 +1,11 @@
 <div class="test">
     <h5>Firstof Tag.</h5>
-    {% firstof  "" "wello k then" "heh" %}<br>
-    {% firstof '' 'well ok then' 'heh' %}<br>
+    {% firstof  "" "well ok then" "heh" %}<br>
+    {% firstof '' 'well that\'s crasy' 'heh' %}<br>
+    {% firstof "that's what she said!" %}<br>
+    {% firstof 'that"s what she said!' %}<br>
+    {% firstof 'that\'s what she said!' "that\"s what she said!" %}<br>
+    {% firstof "that\"s what she said!" 'that\'s what she said!' %}<br>
     {% firstof  false_dict false true %}<br>
     {% firstof  False False True %}<br>
     {% firstof  0 0 1 %}<br>

@@ -15,6 +15,7 @@
         <div id="ServerWrap">
         	These are server side rendered templates, using Django's built in tags and filters.
         	<hr>
+            {% include "mango/home/templates/includes/firstof_filters.html" %}
             {% include "mango/home/templates/includes/firstof_tag.html" %}
             {% include "mango/home/templates/includes/filter_tag.html" %}
             {% include "mango/home/templates/includes/var_simple.html" %}
@@ -97,6 +98,10 @@
             {% include_verbatim "mango/home/templates/includes/firstof_tag.html" %}
         </script>
 
+        <script type="text/template" id="firstof-filters-tag">
+            {% include_verbatim "mango/home/templates/includes/firstof_filters.html" %}
+        </script>
+
     {% endblock clientside %}
 
 
@@ -104,6 +109,9 @@
     {% block foot %}
         <script>
             {% include "mango/home/templates/json/test_data.html" %}
+
+            var fof = mango.template($('#firstof-filters-tag').html());
+            $('#DjangoClientWrap').append(fof(data));
 
             var fo = mango.template($('#firstof-tag').html());
             $('#DjangoClientWrap').append(fo(data));
@@ -157,7 +165,7 @@
                     server = this.innerHTML,
                     client = $('#DjangoClientWrap .test')[idx].innerHTML,
                     result = (server === client) ? 'pass' : 'fail';
-                //console.log(result, title);
+                console.log(result, title);
             });
         </script>
     {% endblock foot %}

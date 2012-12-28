@@ -76,7 +76,7 @@
             }
         },
         capfirst: function(str) {
-            if (typeof(str) !== "string") return str;
+            if (str.constructor !== String) return str;
             return str[0].toUpperCase() + str.substring(1, str.length);
         },
         cut: function(str, arg) {
@@ -120,7 +120,7 @@
             return str.replace(/\n/g, '<br />');
         },
         lower: function(str) {
-            if (typeof(str) !== "string" && typeof(str) !== "number") {
+            if (str.constructor !== String && str.constructor !== Number) {
                 str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toLowerCase);
                 return str;
             }
@@ -195,7 +195,7 @@
             return str.join(' ');
         },
         upper: function(str) {
-            if (typeof(str) !== "string" && typeof(str) !== "number") {
+            if (str.constructor !== String && str.constructor !== Number) {
                 str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toUpperCase);
                 return str;
             }
@@ -225,7 +225,7 @@
         },
         escape: function(str) {
             /* Escapes <, >, ', ", and & into HTML character entities. */
-            if (typeof(str) === "string") {
+            if (str.constructor === String) {
                 return str.replace(htmlEscaper, function(match) {return htmlEscapes[match]; });
             } else {
                 return str;
@@ -235,9 +235,9 @@
             /* Probably a too-specific implementation of map.  Traverses an object and all child objects and
                calls the specified 'method'. */
             mango.each(obj, function(val, iter, parent_obj){
-                if (typeof(val) !== "string" && typeof(val) !== "number") {
+                if (val.constructor !== String && val.constructor !== Number) {
                     mango.filters._traverse_obj_and_apply_string_method(val, method);
-                } else if (typeof(val) === "number" ) {
+                } else if (val.constructor === Number) {
                     //do nothing to numbers
                 } else {
                     parent_obj[iter] = method.call(val);
@@ -245,7 +245,7 @@
             });
             return obj;
         },
-        apply: function(tvar, tag_filters, evaluate_filters) {
+        apply: function(tvar, filters, evaluate_filters) {
             /* Accepts a template variable + chained filters as an argument, splits it out, and applies each filter when methods of this object are present. */
 
             var i,
@@ -255,8 +255,8 @@
                 filterList = (!evaluate_filters) ? tvar.split('|') : [tvar];
 
             tvar = filterList.shift();
-            tag_filters = (tag_filters === undefined) ? [] : tag_filters.split(',');
-            filterList = filterList.concat(tag_filters);
+            filters = (filters === undefined) ? [] : filters.split(',');
+            filterList = filterList.concat(filters);
 
             for (i = 0; i < filterList.length; i ++) {
                 tagMethod = mango.filters.trim(filterList[i]).split(/:(.+)/);
@@ -276,7 +276,7 @@
             }
             return tvar;
         },
-        _tag_filters: []
+        _filters: []
     };
 
     mango.cycle = function(args) {
@@ -394,14 +394,14 @@
         filter: function (args) {
             /* Wraps the template output in a closure and passes the specified filters in as arguments. */
             args = args[0].split('|');
-            mango.filters._tag_filters.push(mango.filters._tag_filters.concat(args));
+            mango.filters._filters.push(mango.filters._filters.concat(args));
             return '__p += (function(filters) {\n \tvar __p = ""; \n';
         },
         endfilter: function() {
             var ret = "\n return ((__t=(";
             ret += " mango.filters.apply(__p, filters, true) ";
             ret += " ))==null?'':__t ); \n";
-            ret += '})( "' + mango.filters._tag_filters.pop() + '")';
+            ret += '})( "' + mango.filters._filters.pop() + '")';
             return ret;
 
         },
@@ -531,14 +531,19 @@
                 args,
                 smart_split_re = new RegExp(/((?:[^\s'"]*(?:(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')[^\s'"]*)+)|\S+)/gi);
 
-            tagStatement = tagStatement.replace('>', ' > ').replace('<', ' < ')
-                .replace('>=', ' >= ').replace('<=', ' <= ')
-                .replace('==', ' == ').replace('!=', ' != ');
             tagStatement = mango.filters.trim(tagStatement);
             tagStatement = tagStatement.match(smart_split_re);
 
             tag = tagStatement.shift();
             args = tagStatement;
+
+            if (tag === 'if' || tag === 'elif') {
+                mango.each(args, function(val, idx, obj) {
+                    obj[idx] = val.replace('>', ' > ').replace('<', ' < ')
+                        .replace('>=', ' >= ').replace('<=', ' <= ')
+                        .replace('==', ' == ').replace('!=', ' != ');
+                });
+            }
 
             if (tag !== 'filter') {
                 args = mango.tags.apply_filters(args);
