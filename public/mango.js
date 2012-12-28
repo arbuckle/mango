@@ -76,8 +76,13 @@
             }
         },
         capfirst: function(str) {
-            if (str.constructor !== String) return str;
-            return str[0].toUpperCase() + str.substring(1, str.length);
+            if (str.constructor === Boolean) {
+                str = str.toString();
+            }
+            if (str.constructor === String) {
+                return str[0].toUpperCase() + str.substring(1, str.length);
+            }
+            return str;
         },
         cut: function(str, arg) {
             return str.replace(arg, '');
@@ -195,6 +200,9 @@
             return str.join(' ');
         },
         upper: function(str) {
+            if (str.constructor === Boolean) {
+                str = str.toString();
+            }
             if (str.constructor !== String && str.constructor !== Number) {
                 str = mango.filters._traverse_obj_and_apply_string_method(str, String.prototype.toUpperCase);
                 return str;
