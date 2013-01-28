@@ -13,31 +13,32 @@ mango.js renders your verbatim Django templates to a callable Javascript functio
 Usage.
 ---------------
 1. Update your views to return the context in JSON format:
-
+    ```python
     context.update({"page_context": json.dumps(context)})
+    ```
 
 2. Expose a verbatim version of your template to the DOM using the {% ssi %} tag:
-
+    ```javascript
     <script type="text/template" id="MyClientSideTemplate">
         {% ssi "/home/html/application/templates/my_template.html" %}
     </script>
-
+    ```
 3.  Create a mango template object and grab the context variable:
-
+    ```javascript
     <script>
         var myTemplate = document.getElementById('MyClientSideTemplate').innerHTML;
         myTemplate = mango.template(templateInclude);
 
         var page_context = JSON.parse("{{ page_context|escapejs }}")
     </script>
-
+    ```
 4.  Render your template and append it to the DOM:
-
+    ```javascript
     <script>
         var renderedTemplate = myTemplate(page_context);
         document.querySelector('body').innnerHTML = renderedTemplate;
     </script>
-
+    ```
 
 Caveats.
 --------
@@ -55,7 +56,7 @@ The Django Debug Toolbar is handy for inspecting a template's query load in orde
 In addition to this, Javascript templates cannot be relied upon to render lists or dicts to strings in the same way that
 Python does.  If your templates expose raw data structures as HTML, you will need to overload the toString method for
 both Array and Object in order to display this data correctly.
-
+    ```javascript
     Array.prototype.toString = function() {
         var ret = '[';
         for (var i = 0; i < this.length; i ++) {
@@ -78,7 +79,7 @@ both Array and Object in order to display this data correctly.
         ret += '}';
         return ret;
     };
-
+    ```
 
 
 Authoring Custom Tags and Filters.
@@ -91,7 +92,7 @@ to the appropriate object.  Method names _must_ be lower case.
 Filters are chainable, and are called when data is passed into the rendered template.  They accept two arguments:
 The value that will be transformed by the filter, and arguments passed into the filter.
 As an example, here is a filter to transform phone number digits into hyphenated strings:
-
+    ```javascript
     {{ user_phone.phonePrettify|'us' }}
 
     mango.filters.phonePrettify = function(val, locale) {
@@ -106,10 +107,10 @@ As an example, here is a filter to transform phone number digits into hyphenated
         }
         return output;
     }
-
+    ```
 Tags are different from filters, in that the output returned by the tag will be evaluated as Javascript code.  To give
 an example, here are the wrong and right ways to write a standalone "concat" tag:
-
+    ```javascript
     {% wrongConcat var1 'val2' var3 %}
 
     mango.tags.wrongconcat = function(args) {
@@ -117,7 +118,7 @@ an example, here are the wrong and right ways to write a standalone "concat" tag
     }
 
     > var1'val2'var3
-
+    ```
 Since the return value from a template tag is written into the rendering function verbatim, it must be valid Javascript.
 This approach results in a SyntaxError.
 
@@ -127,7 +128,7 @@ this string so that when the template is rendered, the values are evaluated and 
 
 So mango.tag contains a helper method, _getOutputString(val), which populates the output string to render any value that
 is passed to it.
-
+    ```javascript
     {% rightConcat var1 'val2' var3 %}
 
      mango.tags.rightconcat: function(args) {
@@ -138,9 +139,10 @@ is passed to it.
         });
         return ret;
     }
+    ```
 
-Major Unfinished Components:
-----------------------------
+TODOs:
+------
 - {% ifchanged %}
 - {% ifequal %}
 - {% ifnotequal %}
@@ -149,6 +151,4 @@ Major Unfinished Components:
 - {% url %}
 - {% verbatim %}
 - Date filters.
-
-
-
+- Maybe refactor the whole thing
