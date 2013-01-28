@@ -42,9 +42,10 @@ Caveats.
 Client-side templating requires diligent preparation of the page context in order to work reliably.  If you're counting
 on Django's ability to follow foreign-key relations in the template, data will be missing and *your template will fail
 to render as expected*.  So code like this will not work in a mango template:
-
-    {# Follow the author relation and get the avatar from the user's profile #}
-    {{ post.author.profile.avatar }}
+```
+{# Follow the author relation and get the avatar from the user's profile #}
+{{ post.author.profile.avatar }}
+```
 
 Unless you explicitly populate the desired relations in your view, first.  As a general rule, following relations using
 the template language is an anti-pattern, since it can add hundreds of blocking queries to Django's rendering operation.
@@ -53,72 +54,72 @@ The Django Debug Toolbar is handy for inspecting a template's query load in orde
 In addition to this, Javascript templates cannot be relied upon to render lists or dicts to strings in the same way that
 Python does.  If you want your templates to expose raw data structures as HTML, you will need to overload the toString
 method for both Array and Object in order to display this data correctly.
-    ```javascript
-    Array.prototype.toString = function() {
-        var ret = '[';
-        for (var i = 0; i < this.length; i ++) {
-            ret += (this[i].constructor === String) ? '\'' + this[i] + '\'' : this[i];
-            ret += ', ';
-        }
-        ret = ret.substr(0, ret.length - 2);
-        ret += ']';
-        return ret;
-    };
-    Object.prototype.toString = function() {
-        var key,
-            ret = '{';
-        for (key in this) {
-            ret += '\'' + key + '\': ';
-            ret += (this[key].constructor === String) ? '\'' + this[key] + '\'' : this[key];
-            ret += ', ';
-        }
-        ret = ret.substr(0, ret.length - 2);
-        ret += '}';
-        return ret;
-    };
-    ```
+```
+Array.prototype.toString = function() {
+    var ret = '[';
+    for (var i = 0; i < this.length; i ++) {
+        ret += (this[i].constructor === String) ? '\'' + this[i] + '\'' : this[i];
+        ret += ', ';
+    }
+    ret = ret.substr(0, ret.length - 2);
+    ret += ']';
+    return ret;
+};
+Object.prototype.toString = function() {
+    var key,
+        ret = '{';
+    for (key in this) {
+        ret += '\'' + key + '\': ';
+        ret += (this[key].constructor === String) ? '\'' + this[key] + '\'' : this[key];
+        ret += ', ';
+    }
+    ret = ret.substr(0, ret.length - 2);
+    ret += '}';
+    return ret;
+};
+```
 
 
 Authoring Custom Tags and Filters.
 ---------------------------------
 mango.js tags and filters are namespaced in mango.tags and mango.filters respectively.  To add your own, add a method
 to the appropriate object.  Method names _must_ be lower case.
-    ```javascript
-    mango.tags.customtag = function(args){'...'};
-    mango.filters.customtfilter = function(val, arg){'...'};
-    ```
+```
+mango.tags.customtag = function(args){'...'};
+mango.filters.customtfilter = function(val, arg){'...'};
+```
 
 Filters are chainable, and are called when data is passed into the rendered template.  They accept two arguments:
 The value that will be transformed by the filter, and arguments passed into the filter.
 As an example, here is a filter to transform phone number digits into hyphenated strings:
-    ```javascript
-    {{ user_phone.phonePrettify|'us' }}
+```
+{{ user_phone.phonePrettify|'us' }}
 
-    mango.filters.phonePrettify = function(val, locale) {
-        // takes a 10-digit US or 11-digit UK phone number and gussies it up for display.  Locale must be explicit.
-        var output = String(val).split('');
-        if (locale.toLowerCase() === 'us' && output.length === 10) {
-            //(555)555-5555
-            output = '(' + output.substr(0,3) + ')' + output.substr(3,3) + '-' + output.substr(6,4);
-        } else if (locale.toLowerCase() === 'uk' && output.length === 11) {
-            //(55555) 555555
-            output = '(' + output.substr(0,5) + ') ' + output.substr(5,6);
-        }
-        return output;
+mango.filters.phonePrettify = function(val, locale) {
+    // takes a 10-digit US or 11-digit UK phone number and gussies it up for display.  Locale must be explicit.
+    var output = String(val).split('');
+    if (locale.toLowerCase() === 'us' && output.length === 10) {
+        //(555)555-5555
+        output = '(' + output.substr(0,3) + ')' + output.substr(3,3) + '-' + output.substr(6,4);
+    } else if (locale.toLowerCase() === 'uk' && output.length === 11) {
+        //(55555) 555555
+        output = '(' + output.substr(0,5) + ') ' + output.substr(5,6);
     }
-    ```
+    return output;
+}
+```
 
 Tags are different from filters, in that the output returned by the tag will be evaluated as Javascript code.  To give
 an example, here are the wrong and right ways to write a standalone "concat" tag:
-    ```javascript
-    {% wrongConcat var1 'val2' var3 %}
+```
+{% wrongConcat var1 'val2' var3 %}
 
-    mango.tags.wrongconcat = function(args) {
-        return args.join('');
-    }
+mango.tags.wrongconcat = function(args) {
+    return args.join('');
+}
 
-    > var1'val2'var3
-    ```
+> var1'val2'var3
+```
 
 Since the return value from a template tag is written into the rendering function verbatim, it must be valid Javascript.
 This approach results in a SyntaxError.
@@ -129,18 +130,18 @@ this string so that when the template is rendered, the values are evaluated and 
 
 So mango.tag contains a helper method, _getOutputString(val), which populates the output string to render any value that
 is passed to it.
-    ```javascript
-    {% rightConcat var1 'val2' var3 %}
+```
+{% rightConcat var1 'val2' var3 %}
 
-     mango.tags.rightconcat: function(args) {
-        var ret = '';
-        mango.each(args, function(val, index) {
-            "use strict";
-            ret += mango.tags._getOutputString(val);
-        });
-        return ret;
-    }
-    ```
+ mango.tags.rightconcat: function(args) {
+    var ret = '';
+    mango.each(args, function(val, index) {
+        "use strict";
+        ret += mango.tags._getOutputString(val);
+    });
+    return ret;
+}
+```
 
 TODOs:
 ------
