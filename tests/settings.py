@@ -7,6 +7,10 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+ALLOWED_INCLUDE_ROOTS = (
+    'c:/users/david/documents/python/mango/',
+)
+
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -61,14 +65,14 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/public/'
+STATIC_URL = '/src/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "C:/Users/david/Documents/Python/mango/public",
+    "C:/Users/david/Documents/Python/mango/src",
 )
 
 # List of finder classes that know how to find static files in
@@ -91,16 +95,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
 )
 
-ROOT_URLCONF = 'mango.urls'
+ROOT_URLCONF = 'tests.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'mango.wsgi.application'
+WSGI_APPLICATION = 'tests.wsgi.application'
 
 TEMPLATE_DIRS = (
     "C:/Users/david/Documents/Python/mango",
 )
 
 INSTALLED_APPS = (
-    'mango.home',
+    'tests.home',
 )
 

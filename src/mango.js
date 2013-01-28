@@ -364,6 +364,11 @@
 
 	mango.tags = {
         _for_closing_tags: [],
+        _getOutputString: function(val) {
+            //Helper abstraction for writing to the DOM from within a template tag.
+            "use strict";
+            return "\n__p+=''+\n((__t=(" + val + "))==null?'':__t)+\n'';\n";
+        },
         comment: function() {
             return "if (false) { \n";
         },
@@ -394,9 +399,7 @@
             }
 
             /* writing the cycle var to the template */
-            ret +=  "\n__p+='";
-            ret += "'+\n((__t=(" + 'eval(__cycle.get_current(true))' + "))==null?'':__t)+\n'";
-            ret += "';\n";
+            ret += mango.tags._getOutputString('eval(__cycle.get_current(true))');
             return ret;
         },
         filter: function (args) {

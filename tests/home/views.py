@@ -5,7 +5,7 @@ class Home(TemplateView):
     """
     Basic empty view
     """
-    template_name = 'mango/home/templates/home.html'
+    template_name = 'tests/home/templates/home.html'
 
 
     def get_context_data(self, **kwargs):
@@ -48,5 +48,5 @@ class Home(TemplateView):
             'num_walruses': 3,
             'url': 'http://www.example.com/',
         }
-        context.update({"json": dumps(context)})
+        context.update({"page_context": dumps(context)})
         return context

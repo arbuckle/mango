@@ -3,73 +3,148 @@ mango.js
 DRY client-side templates for Django.
 -------------------------------------
 
-**This project is somewhat incomplete.**
+Problem:    When writing a thick-client application, templates must be duplicated in a client-side template language in
+order to avoid the first-load tradeoff.
+Solution:   mango.js.  A Javascript library for rendering Django templates.
 
-Mango.js is (intended to be):
-- A Javascript rendering engine that translates your existing Django templates into callable Javascript objects.
-- Feature-complete, with out-of-the-box support for all of Django's flow-control and conditional syntax.
-- Easily extendable, so that implementing custom tags and filters is a painless process.
+mango.js renders your verbatim Django templates to a callable Javascript function.
 
-When you render a view's context to a JSON object, and pass that object to a mango.js template, you get the exact same
-result as you would had you passed that context to a Django template.
 
-Mango.js eliminates the need to learn the hot new client-side template language of the day (sorry!), as well as
-the need to author and maintain multiple distinct branches of front-end code.  Write yours templates one time, and use
-them everywhere.
-
-Usage is simple.
+Usage.
 ---------------
-*In your app:*
+1. Update your views to return the context in JSON format:
+    context.update({"page_context": json.dumps(context)})
 
-    implement a template tag that includes a template without rendering its contents
-
-*In your views:*
-
-    context.update({"json": dumps(context)})
-
-*In your template:*
-
-    <script src="mango.js"></script>
+2. Expose a verbatim version of your template to the DOM using the {% ssi %} tag:
     <script type="text/template" id="MyClientSideTemplate">
-        {% include_verbatim "templates/my_template.html" %}
+        {% ssi "/home/html/application/templates/my_template.html" %}
     </script>
+
+3.  Create a mango template object and grab the context variable:
     <script>
         var myTemplate = document.getElementById('MyClientSideTemplate').innerHTML;
         myTemplate = mango.template(templateInclude);
-        // to render data as HTML...
-        document.getElementById('body').innerHTML += myTemplate(data);
+
+        var page_context = JSON.parse("{{ page_context|escapejs }}")
+    </script>
+
+4.  Render your template and append it to the DOM:
+    <script>
+        var renderedTemplate = myTemplate(page_context);
+        document.querySelector('body').innnerHTML = renderedTemplate;
     </script>
 
 
-TODOS:
-------
--{% ifchanged %}
--{% ifequal %}
--{% ifnotequal %}
--{% now %}
--{% spaceless %}
--{% url %}
--{% verbatim %}
--Date filters.
--Better include_verbatim tag.
--Docstring comments that are basically links to Django's documentation
--Use it in something bigger than a toy project
+Caveats.
+--------
+Client-side templating requires diligent preparation of the page context in order to work reliably.  If you're relying
+on Django's ability to follow foreign-key relations in the template, data will be missing and your template will fail
+to render as expected.  So code like this *will not work* in a mango template:
+
+    {# Follow the author relation and get the avatar from the user's profile #}
+    {{ post.author.profile.avatar }}
+
+Unless you explicitly populate the desired relations in your view, first.  As a general rule, following relations using
+the template language is an anti-pattern, since it can add hundreds of blocking queries to Django's rendering operation.
+The Django Debug Toolbar is handy for inspecting a template's query load in order to optimize the preparation of data.
+
+In addition to this, Javascript templates cannot be relied upon to render lists or dicts to strings in the same way that
+Python does.  If your templates expose raw data structures as HTML, you will need to overload the toString method for
+both Array and Object in order to display this data correctly.
+
+    Array.prototype.toString = function() {
+        var ret = '[';
+        for (var i = 0; i < this.length; i ++) {
+            ret += (this[i].constructor === String) ? '\'' + this[i] + '\'' : this[i];
+            ret += ', ';
+        }
+        ret = ret.substr(0, ret.length - 2);
+        ret += ']';
+        return ret;
+    };
+    Object.prototype.toString = function() {
+        var key,
+            ret = '{';
+        for (key in this) {
+            ret += '\'' + key + '\': ';
+            ret += (this[key].constructor === String) ? '\'' + this[key] + '\'' : this[key];
+            ret += ', ';
+        }
+        ret = ret.substr(0, ret.length - 2);
+        ret += '}';
+        return ret;
+    };
 
 
-A Brief Discussion With Myself:
--------------------------------
-- An alternative would be rendering Javascript from Python.  Problem is, current Python -> JS translators tend to be
-  very, very limited in their ability to handle complex data structuress such as Class Inheritance and Generators, both
-  of which are in use in Django's backent code.
-- Rendering Javascript from Python would likely also result in a large, recursive exploration over large portions of the
-  Django codebase, all of which would have to be sent over the wire to the client.
 
-- The Django template language isn't Python, however.  It's a purposefully simplified subset of the Python language,
-  which follows simple rules with very few exceptions.  Supporting this language in Javascript is a relatively simple
-  task of properly evaluating the 60-or-so filters and tags that are implemented in Python.
-- By writing the bulk of the code in Javascript, custom tags and filters need to be written twice: once for Python, and
-  once for JS.  This is kind of a caveat, but tags and filters are very much a write-once-and-never-change type of code,
-  while templates are more likely to be in a constant state of flux.
+Authoring Custom Tags and Filters.
+---------------------------------
+mango.js tags and filters are namespaced in mango.tags and mango.filters respectively.  To add your own, add a method
+to the appropriate object.  Method names _must_ be lower case.
+    mango.tags.customtag = function(args){'...'};
+    mango.filters.customtfilter = function(val, arg){'...'};
 
-- From a maintenance standpoint, Python -> JS and JS-from-python aren't very much different.  The resulting rendered
-  functions are going to be very difficult to debug no matter which approach is used.
+Filters are chainable, and are called when data is passed into the rendered template.  They accept two arguments:
+The value that will be transformed by the filter, and arguments passed into the filter.
+As an example, here is a filter to transform phone number digits into hyphenated strings:
+
+    {{ user_phone.phonePrettify|'us' }}
+
+    mango.filters.phonePrettify = function(val, locale) {
+        // takes a 10-digit US or 11-digit UK phone number and gussies it up for display.  Locale must be explicit.
+        var output = String(val).split('');
+        if (locale.toLowerCase() === 'us' && output.length === 10) {
+            //(555)555-5555
+            output = '(' + output.substr(0,3) + ')' + output.substr(3,3) + '-' + output.substr(6,4);
+        } else if (locale.toLowerCase() === 'uk' && output.length === 11) {
+            //(55555) 555555
+            output = '(' + output.substr(0,5) + ') ' + output.substr(5,6);
+        }
+        return output;
+    }
+
+Tags are different from filters, in that the output returned by the tag will be evaluated as Javascript code.  To give
+an example, here are the wrong and right ways to write a standalone "concat" tag:
+
+    {% wrongConcat var1 'val2' var3 %}
+
+    mango.tags.wrongconcat = function(args) {
+        return args.join('');
+    }
+
+    > var1'val2'var3
+
+Since the return value from a template tag is written into the rendering function verbatim, it must be valid Javascript.
+This approach results in a SyntaxError.
+
+To get around that, it helps to know what's going on under the hood.  The template engine's output HTML is controlled
+by a string which is locally defined as "p" within the rendering function.  Variables in the template are appended to
+this string so that when the template is rendered, the values are evaluated and written in the output HTML.
+
+So mango.tag contains a helper method, _getOutputString(val), which populates the output string to render any value that
+is passed to it.
+
+    {% rightConcat var1 'val2' var3 %}
+
+     mango.tags.rightconcat: function(args) {
+        var ret = '';
+        mango.each(args, function(val, index) {
+            "use strict";
+            ret += mango.tags._getOutputString(val);
+        });
+        return ret;
+    }
+
+Major Unfinished Components:
+----------------------------
+- {% ifchanged %}
+- {% ifequal %}
+- {% ifnotequal %}
+- {% now %}
+- {% spaceless %}
+- {% url %}
+- {% verbatim %}
+- Date filters.
+
+
+
