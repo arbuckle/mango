@@ -66,7 +66,6 @@ to render as expected*.  So code like this will not work in a mango template:
 {# Follow the author relation and get the avatar from the user's profile #}
 {{ post.author.profile.avatar }}
 ```
-
 Unless you explicitly populate the desired relations in your view, first.  As a general rule, following relations using
 the template language is an anti-pattern, since it can add hundreds of blocking queries to Django's rendering operation.
 The Django Debug Toolbar is handy for inspecting a template's query load in order to optimize the preparation of data.
