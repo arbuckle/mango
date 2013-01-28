@@ -13,18 +13,18 @@ mango.js renders your verbatim Django templates to a callable Javascript functio
 Usage.
 ---------------
 1. Update your views to return the context in JSON format:
-    ```python
+    ```
     context.update({"page_context": json.dumps(context)})
     ```
 
 2. Expose a verbatim version of your template to the DOM using the {% ssi %} tag:
-    ```javascript
+    ```
     <script type="text/template" id="MyClientSideTemplate">
         {% ssi "/home/html/application/templates/my_template.html" %}
     </script>
     ```
 3.  Create a mango template object and grab the context variable:
-    ```javascript
+    ```
     <script>
         var myTemplate = document.getElementById('MyClientSideTemplate').innerHTML;
         myTemplate = mango.template(templateInclude);
@@ -33,7 +33,7 @@ Usage.
     </script>
     ```
 4.  Render your template and append it to the DOM:
-    ```javascript
+    ```
     <script>
         var renderedTemplate = myTemplate(page_context);
         document.querySelector('body').innnerHTML = renderedTemplate;
@@ -56,7 +56,7 @@ The Django Debug Toolbar is handy for inspecting a template's query load in orde
 In addition to this, Javascript templates cannot be relied upon to render lists or dicts to strings in the same way that
 Python does.  If your templates expose raw data structures as HTML, you will need to overload the toString method for
 both Array and Object in order to display this data correctly.
-    ```javascript
+    ```
     Array.prototype.toString = function() {
         var ret = '[';
         for (var i = 0; i < this.length; i ++) {
@@ -92,7 +92,7 @@ to the appropriate object.  Method names _must_ be lower case.
 Filters are chainable, and are called when data is passed into the rendered template.  They accept two arguments:
 The value that will be transformed by the filter, and arguments passed into the filter.
 As an example, here is a filter to transform phone number digits into hyphenated strings:
-    ```javascript
+    ```
     {{ user_phone.phonePrettify|'us' }}
 
     mango.filters.phonePrettify = function(val, locale) {
