@@ -13,14 +13,17 @@ mango.js renders your verbatim Django templates to a callable Javascript functio
 Usage.
 ---------------
 1. Update your views to return the context in JSON format:
+
     context.update({"page_context": json.dumps(context)})
 
 2. Expose a verbatim version of your template to the DOM using the {% ssi %} tag:
+
     <script type="text/template" id="MyClientSideTemplate">
         {% ssi "/home/html/application/templates/my_template.html" %}
     </script>
 
 3.  Create a mango template object and grab the context variable:
+
     <script>
         var myTemplate = document.getElementById('MyClientSideTemplate').innerHTML;
         myTemplate = mango.template(templateInclude);
@@ -29,6 +32,7 @@ Usage.
     </script>
 
 4.  Render your template and append it to the DOM:
+
     <script>
         var renderedTemplate = myTemplate(page_context);
         document.querySelector('body').innnerHTML = renderedTemplate;
