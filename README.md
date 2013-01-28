@@ -100,9 +100,10 @@ Object.prototype.toString = function() {
 
 * Exposing the unaltered page context using `json.dumps` is a shortcut that will not be practical for most use cases,
 and in some cases may negatively impact the security of your application.  In addition, certain features such as i18n,
-timezones,
+timezones, cryptographic hashing, and bbcode/markdown rendering, are best left to the server to accomplish.  For these
+cases, an explicitly-defined JSON context should be preferred.
 
-* Use of `this` and other Javascript reserved words should be avoided.
+* When choosing Django variable names, use of `this` and other [Javascript reserved words](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Reserved_Words) should be avoided.
 
 
 Authoring Custom Tags and Filters.
