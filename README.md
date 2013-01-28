@@ -23,19 +23,18 @@ Usage.
         {% ssi "/home/html/application/templates/my_template.html" %}
     </script>
     ```
+
 3.  Create a mango template object and grab the context variable:
     ```
-        var templateSource = document.getElementById('MyClientSideTemplate').innerHTML,
-            myTemplate = mango.template(templateSource);
+    var templateSource = document.getElementById('MyClientSideTemplate').innerHTML,
+        myTemplate = mango.template(templateSource);
 
-        var page_context = JSON.parse("{{ page_context|escapejs }}");
+    var page_context = JSON.parse("{{ page_context|escapejs }}");
     ```
 4.  Render your template and append it to the DOM:
     ```
-    <script>
-        var renderedTemplate = myTemplate(page_context);
-        document.querySelector('body').innnerHTML = renderedTemplate;
-    </script>
+    var renderedTemplate = myTemplate(page_context);
+    document.querySelector('body').innnerHTML = renderedTemplate;
     ```
 
 Caveats.
@@ -88,6 +87,7 @@ to the appropriate object.  Method names _must_ be lower case.
     mango.tags.customtag = function(args){'...'};
     mango.filters.customtfilter = function(val, arg){'...'};
     ```
+
 Filters are chainable, and are called when data is passed into the rendered template.  They accept two arguments:
 The value that will be transformed by the filter, and arguments passed into the filter.
 As an example, here is a filter to transform phone number digits into hyphenated strings:
@@ -107,6 +107,7 @@ As an example, here is a filter to transform phone number digits into hyphenated
         return output;
     }
     ```
+
 Tags are different from filters, in that the output returned by the tag will be evaluated as Javascript code.  To give
 an example, here are the wrong and right ways to write a standalone "concat" tag:
     ```javascript
@@ -118,6 +119,7 @@ an example, here are the wrong and right ways to write a standalone "concat" tag
 
     > var1'val2'var3
     ```
+
 Since the return value from a template tag is written into the rendering function verbatim, it must be valid Javascript.
 This approach results in a SyntaxError.
 
@@ -129,7 +131,7 @@ So mango.tag contains a helper method, _getOutputString(val), which populates th
 is passed to it.
     ```javascript
     {% rightConcat var1 'val2' var3 %}
-    
+
      mango.tags.rightconcat: function(args) {
         var ret = '';
         mango.each(args, function(val, index) {
