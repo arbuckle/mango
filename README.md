@@ -25,12 +25,10 @@ Usage.
     ```
 3.  Create a mango template object and grab the context variable:
     ```
-    <script>
-        var myTemplate = document.getElementById('MyClientSideTemplate').innerHTML;
-        myTemplate = mango.template(templateInclude);
+        var templateSource = document.getElementById('MyClientSideTemplate').innerHTML,
+            myTemplate = mango.template(templateSource);
 
-        var page_context = JSON.parse("{{ page_context|escapejs }}")
-    </script>
+        var page_context = JSON.parse("{{ page_context|escapejs }}");
     ```
 4.  Render your template and append it to the DOM:
     ```
@@ -42,9 +40,9 @@ Usage.
 
 Caveats.
 --------
-Client-side templating requires diligent preparation of the page context in order to work reliably.  If you're relying
-on Django's ability to follow foreign-key relations in the template, data will be missing and your template will fail
-to render as expected.  So code like this *will not work* in a mango template:
+Client-side templating requires diligent preparation of the page context in order to work reliably.  If you're counting
+on Django's ability to follow foreign-key relations in the template, data will be missing and *your template will fail
+to render as expected*.  So code like this will not work in a mango template:
 
     {# Follow the author relation and get the avatar from the user's profile #}
     {{ post.author.profile.avatar }}
@@ -54,9 +52,9 @@ the template language is an anti-pattern, since it can add hundreds of blocking 
 The Django Debug Toolbar is handy for inspecting a template's query load in order to optimize the preparation of data.
 
 In addition to this, Javascript templates cannot be relied upon to render lists or dicts to strings in the same way that
-Python does.  If your templates expose raw data structures as HTML, you will need to overload the toString method for
-both Array and Object in order to display this data correctly.
-    ```
+Python does.  If you want your templates to expose raw data structures as HTML, you will need to overload the toString
+method for both Array and Object in order to display this data correctly.
+    ```javascript
     Array.prototype.toString = function() {
         var ret = '[';
         for (var i = 0; i < this.length; i ++) {
@@ -86,13 +84,14 @@ Authoring Custom Tags and Filters.
 ---------------------------------
 mango.js tags and filters are namespaced in mango.tags and mango.filters respectively.  To add your own, add a method
 to the appropriate object.  Method names _must_ be lower case.
+    ```javascript
     mango.tags.customtag = function(args){'...'};
     mango.filters.customtfilter = function(val, arg){'...'};
-
+    ```
 Filters are chainable, and are called when data is passed into the rendered template.  They accept two arguments:
 The value that will be transformed by the filter, and arguments passed into the filter.
 As an example, here is a filter to transform phone number digits into hyphenated strings:
-    ```
+    ```javascript
     {{ user_phone.phonePrettify|'us' }}
 
     mango.filters.phonePrettify = function(val, locale) {
@@ -130,7 +129,7 @@ So mango.tag contains a helper method, _getOutputString(val), which populates th
 is passed to it.
     ```javascript
     {% rightConcat var1 'val2' var3 %}
-
+    
      mango.tags.rightconcat: function(args) {
         var ret = '';
         mango.each(args, function(val, index) {
