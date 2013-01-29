@@ -7,164 +7,77 @@
         margin-bottom: 30px;
         padding-bottom: 10px;
     }
+    .button {padding: 0px 10px; margin-bottom: 0;}
 </style>
 {% endblock head %}
 
     {% block serverside %}
+        <div id="HeaderWrap">
+            <div class="test-wrap container">
+                <div class="server-test one-third column">
+                    These are server side rendered templates, using Django's built in tags and filters.
+                </div>
+                <div class="client-test one-third column">
+                    These are client side rendered template, using a Django template language parser.
+                </div>
+            </div>
+       </div>
+
         <div id="ServerWrap">
-        	These are server side rendered templates, using Django's built in tags and filters.
         	<hr>
-            {% include "tests/home/templates/includes/firstof_filters.html" %}
-            {% include "tests/home/templates/includes/firstof_tag.html" %}
-            {% include "tests/home/templates/includes/filter_tag.html" %}
-            {% include "tests/home/templates/includes/var_simple.html" %}
-            {% include "tests/home/templates/includes/var_filter.html" %}
-            {% include "tests/home/templates/includes/var_safe.html" %}
-            {% include "tests/home/templates/includes/conditions.html" %}
-            {% include "tests/home/templates/includes/conditions_with_vars.html" %}
-            {% include "tests/home/templates/includes/conditions_elif.html" %}
-            {% include "tests/home/templates/includes/for_loop_array.html" %}
-            {% include "tests/home/templates/includes/loop_conditions_nesting.html" %}
-            {% include "tests/home/templates/includes/loop_nested_empty.html" %}
-            {% include "tests/home/templates/includes/comment_tag.html" %}
-            {% include "tests/home/templates/includes/cycle_tag.html" %}
-            {% include "tests/home/templates/includes/cycle_tag.html" %}
-            {% include "tests/home/templates/includes/assorted_filters.html" %}
+            {% for include_path in includes %}
+                <div class="test-wrap container">
+                    {% include "tests/home/templates/includes/controls.html" %}
+                    <div class="server-test one-third column">
+                        {% include include_path.path %}
+                    </div>
+                    <div class="client-test one-third column"></div>
+                </div>
+            {% endfor %}
+
         </div>
 
     {% endblock serverside %}
 
 
-    {% block clientside %}
-        <div id="DjangoClientWrap">
-            These are client side rendered template, using a Django template language parser.
-            <hr>
-        </div>
-
-        <script type="text/template" id="filter-tag">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/filter_tag.html" %}
-        </script>
-
-        <script type="text/template" id="simple-variable-usage">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/var_simple.html" %}
-        </script>
-
-        <script type="text/template" id="variable-with-template-filter">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/var_filter.html" %}
-        </script>
-
-		<script type="text/template" id="script-injection">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/var_safe.html" %}
-		</script>
-
-		<script type="text/template" id="basic-conditional">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/conditions.html" %}
-        </script>
-
-        <script type="text/template" id="conditions_with_variables">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/conditions_with_vars.html" %}
-        </script>
-
-        <script type="text/template" id="conditions_elif">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/conditions_elif.html" %}
-        </script>
-
-        <script type="text/template" id="for_loop_array">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/for_loop_array.html" %}
-        </script>
-
-        <script type="text/template" id="nested-conditions-and-loops">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/loop_conditions_nesting.html" %}
-        </script>
-
-        <script type="text/template" id="loop-nested-inner-empty">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/loop_nested_empty.html" %}
-        </script>
-
-        <script type="text/template" id="comment_tag">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/comment_tag.html" %}
-        </script>
-
-        <script type="text/template" id="cycle_tag">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/cycle_tag.html" %}
-        </script>
-
-        <script type="text/template" id="assorted-filters">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/assorted_filters.html" %}
-        </script>
-
-        <script type="text/template" id="firstof-tag">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/firstof_tag.html" %}
-        </script>
-
-        <script type="text/template" id="firstof-filters-tag">
-            {% ssi "c:/users/david/documents/python/mango/tests/home/templates/includes/firstof_filters.html" %}
-        </script>
-
-    {% endblock clientside %}
-
-
-
     {% block foot %}
+        {% include "tests/home/templates/mango_templates.html" %}
         <script>
             {% include "tests/home/templates/json/test_data.html" %}
 
-            var fof = mango.template($('#firstof-filters-tag').html());
-            $('#DjangoClientWrap').append(fof(page_context));
+            var $templates = $('script[type="text/template"]');
 
-            var fo = mango.template($('#firstof-tag').html());
-            $('#DjangoClientWrap').append(fo(page_context));
-
-            var ft = mango.template($('#filter-tag').html());
-            $('#DjangoClientWrap').append(ft(page_context));
-
-            var svu = mango.template($('#simple-variable-usage').html());
-            $('#DjangoClientWrap').append(svu(page_context));
-
-			var vwtf = mango.template($('#variable-with-template-filter').html());
-			$('#DjangoClientWrap').append(vwtf(page_context));
-
-			var si = mango.template($('#script-injection').html());
-			$('#DjangoClientWrap').append(si(page_context));
-
-			var bc = mango.template($('#basic-conditional').html());
-			$('#DjangoClientWrap').append(bc(page_context));
-
-            var cwv = mango.template($('#conditions_with_variables').html());
-            $('#DjangoClientWrap').append(cwv(page_context));
-
-            var ce = mango.template($('#conditions_elif').html());
-            $('#DjangoClientWrap').append(ce(page_context));
-
-            var fla = mango.template($('#for_loop_array').html());
-            $('#DjangoClientWrap').append(fla(page_context));
-
-            var ncl = mango.template($('#nested-conditions-and-loops').html());
-            $('#DjangoClientWrap').append(ncl(page_context));
-
-            var lnie = mango.template($('#loop-nested-inner-empty').html());
-            $('#DjangoClientWrap').append(lnie(page_context));
-
-            var cmt = mango.template($('#comment_tag').html());
-            $('#DjangoClientWrap').append(cmt(page_context));
-
-            var ct = mango.template($('#cycle_tag').html());
-            $('#DjangoClientWrap').append(ct(page_context));
-
-            var ct2 = mango.template($('#cycle_tag').html());
-            $('#DjangoClientWrap').append(ct2(page_context));
-
-            var af = mango.template($('#assorted-filters').html());
-            $('#DjangoClientWrap').append(af(page_context));
+            $('#ServerWrap').on('click', '.source', function(event){
+                var templateID = $(this).attr('data-target'),
+                    templateHTML = document.getElementById(templateID).innerHTML,
+                    $target = $(this).parent().siblings('.server-test'),
+                    stash = $target.html();
+                if ($target[0].stash) {
+                    $(this).html('View Source');
+                    $target.html($target[0].stash);
+                    $target[0].stash = undefined;
+                } else {
+                    $(this).html('View Output');
+                    $target[0].stash = stash;
+                    $target.html(templateHTML);
+                }
 
 
+            }).on('click', '.render', function(event){
+                var templateHTML = document.getElementById($(this).attr('data-target')).innerHTML,
+                    template = mango.template(templateHTML),
+                    $target = $(this).parent().siblings('.client-test');
+                $target.html(template(page_context));
+            });
 
-            $('#ServerWrap .test').each(function(idx, val){
-                var title = $(this).find('h5').html(),
-                    server = this.innerHTML,
-                    client = $('#DjangoClientWrap .test')[idx].innerHTML,
+            /*
+            $('.test-wrap').each(function(idx, val){
+                var title = $(this).find('.server-test h5').html(),
+                    server = $(this).find('.server-test').html().trim(),
+                    client = $(this).find('.client-test').html().trim(),
                     result = (server === client) ? 'pass' : 'fail';
                 console.log(result, title);
             });
+            */
         </script>
     {% endblock foot %}

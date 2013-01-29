@@ -1,4 +1,5 @@
 from json import dumps
+import os
 from django.views.generic.base import TemplateView
 
 class Home(TemplateView):
@@ -7,8 +8,31 @@ class Home(TemplateView):
     """
     template_name = 'tests/home/templates/home.html'
 
+    def get_includes(self, path_type):
+        include_path = 'c:/users/david/documents/python/mango/tests/home/templates/tests'
+        all_includes = []
+        includes = []
+        for root, dirs, all_includes in os.walk(include_path):
+            pass
+
+        for include in all_includes:
+            if path_type == 'relative':
+                includes.append({
+                    "path":'tests/home/templates/tests/' + include,
+                    "name": include.replace('.html', '')
+                })
+
+            elif path_type == 'absolute':
+                includes.append({
+                    "path":'c:/users/david/documents/python/mango/tests/home/templates/tests/' + include,
+                    "name": include.replace('.html', '')
+                })
+        includes.reverse()
+        return includes
+
 
     def get_context_data(self, **kwargs):
+
         plans = {
             "basic": "This is a basic plan",
             "premium": "This is a premium plan",
@@ -21,6 +45,8 @@ class Home(TemplateView):
         }
 
         context = {
+            'includes': self.get_includes('relative'),
+            'ssis': self.get_includes('absolute'),
             'plans': plans,
             'plans_empty': empties,
             'dict': {"Key1": "Value1", 2: "Value2"},
