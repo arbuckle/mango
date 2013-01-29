@@ -1,0 +1,5 @@
+{% for include_path in ssis %}
+    <script type="text/template" id="{{ include_path.name }}">
+        {% ssi include_path.path %}
+    </script>
+{% endfor %}

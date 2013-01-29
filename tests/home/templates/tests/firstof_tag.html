@@ -1,11 +1,9 @@
 <div class="test">
     <h5>Firstof Tag.</h5>
-    {% firstof  "" "well ok then" "heh" %}<br>
-    {% firstof '' 'well that\'s crasy' 'heh' %}<br>
-    {% firstof "that's what she said!" %}<br>
-    {% firstof 'that"s what she said!' %}<br>
-    {% firstof 'that\'s what she said!' "that\"s what she said!" %}<br>
-    {% firstof "that\"s what she said!" 'that\'s what she said!' %}<br>
+    {% firstof  "" "Second item." "heh" %}<br>
+    {% firstof '' 'Second item with an escaped "\'".' 'heh' %}<br>
+    {% firstof 'First item; Second item None' None %}<br>
+    {% firstof None 'Second item; First item None' None %}<br>
     {% firstof  false_dict false true %}<br>
     {% firstof  False False True %}<br>
     {% firstof  0 0 1 %}<br>

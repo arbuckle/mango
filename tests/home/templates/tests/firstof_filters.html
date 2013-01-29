@@ -1,0 +1,27 @@
+<div class="test">
+    <h5>FirstOf Tag with Filters.</h5>
+    {% firstof 'that"s <strong>what</strong> I\'m talking about!!' %}<br>
+
+    {% filter upper %}
+        {% firstof  "" "Second item." "heh" %}<br>
+        {% firstof '' 'Second item with an escaped "\'".' 'heh' %}<br>
+        {% firstof 'First item; Second item None' None %}<br>
+        {% firstof None 'Second item; First item None' None %}<br>
+        {% firstof  False False True %}<br>
+        {% firstof  is_cool has_coin empty_list empty_dict name %}<br>
+    {% endfilter %}
+    {% filter upper|slugify %}
+        {% firstof  "" "Second item." "heh" %}<br>
+        {% firstof '' 'Second item with an escaped "\'".' 'heh' %}<br>
+        {% firstof 'First item; Second item None' None %}<br>
+        {% firstof None 'Second item; First item None' None %}<br>
+        {% firstof  False False True %}<br>
+        {% firstof  is_cool has_coin empty_list empty_dict name %}<br>
+    {% endfilter %}<br>
+    {% firstof  "" "Second item." "heh" %}<br>
+    {% firstof '' 'Second item with an escaped "\'".' 'heh' %}<br>
+    {% firstof 'First item; Second item None' None %}<br>
+    {% firstof None 'Second item; First item None' None %}<br>
+    {% firstof  False False True|upper%}<br>
+    {% firstof  is_cool has_coin empty_list empty_dict name|upper %}<br>
+</div>
