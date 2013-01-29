@@ -590,7 +590,7 @@
         var index = 0;
         var source = "__p+='";
 
-        source += "';\n var False = false,\n\t True = true; \n__p+='"; /* gross! */
+        source += "';\n var False = false,\n\t True = true,\n\tNone = ''; \n__p+='"; /* gross! */
         source += "';\n" + 'obj._cycles = {};' + "\n__p+='"; /* gross! */
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {
