@@ -14,6 +14,9 @@ in order to avoid the first-load tradeoff.
 * Mango.js can be easily updated to support custom tags and filters.
 * Mango.js ignores missing tags and filters, so pre-processed input context does not result in errors.
 
+[Check out the demo](https://catto5k.com/mango.demo.html)
+--------------------
+
 **Development is not yet complete**
 TODOs:
 - {% ifchanged %}
