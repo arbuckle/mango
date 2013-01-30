@@ -6,7 +6,10 @@
  * http://underscorejs.org/underscore.js
  *
  */
+
+
 (function() {
+
     var root = this;
     var mango = function(obj) {
         return new mango(obj);
@@ -32,6 +35,8 @@
     };
     var htmlEscaper = /\'|\"|>|<|&/g;
     var noMatch = /(.)^/;
+
+    mango.strftime = function(){var e=function(e,t,n){if(typeof n==="undefined"){n=10}t=t+"";for(;parseInt(e,10)<n&&n>1;n/=10){e=t+e}return e.toString()};var t={formats:{a:function(e,t){return t.a[e.getDay()]},A:function(e,t){return t.A[e.getDay()]},b:function(e,t){return t.b[e.getMonth()]},B:function(e,t){return t.B[e.getMonth()]},C:function(t){return e(parseInt(t.getFullYear()/100,10),0)},d:["getDate","0"],e:["getDate"," "],g:function(n){return e(parseInt(t.formats.G(n)%100,10),0)},G:function(e){var n=e.getFullYear();var r=parseInt(t.formats.V(e),10);var i=parseInt(t.formats.W(e),10);if(i>r){n++}else if(i===0&&r>=52){n--}return n},H:["getHours","0"],I:function(t){var n=t.getHours()%12;return e(n===0?12:n,0)},j:function(t){var n=new Date(""+t.getFullYear()+"/1/1 GMT");var r=new Date(""+t.getFullYear()+"/"+(t.getMonth()+1)+"/"+t.getDate()+" GMT");var i=r-n;var s=parseInt(i/6e4/60/24,10)+1;return e(s,0,100)},k:["getHours"," "],l:function(t){var n=t.getHours()%12;return e(n===0?12:n," ")},m:function(t){return e(t.getMonth()+1,0)},M:["getMinutes","0"],p:function(e,t){return t.p[e.getHours()>=12?1:0]},P:function(e,t){return t.P[e.getHours()>=12?1:0]},s:function(e,t){return parseInt(e.getTime()/1e3,10)},S:["getSeconds","0"],u:function(e){var t=e.getDay();return t===0?7:t},U:function(n){var r=parseInt(t.formats.j(n),10);var i=6-n.getDay();var s=parseInt((r+i)/7,10);return e(s,0)},V:function(n){var r=parseInt(t.formats.W(n),10);var i=(new Date(""+n.getFullYear()+"/1/1")).getDay();var s=r+(i>4||i<=1?0:1);if(s===53&&(new Date(""+n.getFullYear()+"/12/31")).getDay()<4){s=1}else if(s===0){s=t.formats.V(new Date(""+(n.getFullYear()-1)+"/12/31"))}return e(s,0)},w:"getDay",W:function(n){var r=parseInt(t.formats.j(n),10);var i=7-t.formats.u(n);var s=parseInt((r+i)/7,10);return e(s,0,10)},y:function(t){return e(t.getFullYear()%100,0)},Y:"getFullYear",z:function(t){var n=t.getTimezoneOffset();var r=e(parseInt(Math.abs(n/60),10),0);var i=e(Math.abs(n%60),0);return(n>0?"-":"+")+r+i},Z:function(e){var n=e.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/,"$2").replace(/[a-z ]/g,"");if(n.length>4){n=t.formats.z(e)}return n},"%":function(e){return"%"}},aggregates:{c:"locale",D:"m/d/y",F:"Y-m-d",h:"b",n:"\n",r:"I:M:S p",R:"H:M",t:"	",T:"H:M:S",x:"locale",X:"locale"},format:function(n,r){r=r||"Y-m-d";if(!n.constructor===Date){return n.constructor?n:""}var i,s,o,u;i={a:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],A:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],b:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],B:["January","February","March","April","May","June","July","August","September","October","November","December"],c:"a, b d, Y l:M:S p Z",p:["AM","PM"],P:["am","pm"],x:"m/d/y",X:"l:M:S p"};var a=function(e,n){if(s&&n==="r"){return i[n]}var r=t.aggregates[n];return r==="locale"?i[n]:r};var f=function(r,s){var o=t.formats[s],u=o.constructor===Array?"array":typeof o;switch(u){case"string":return n[o]();case"function":return o.call(n,n,i);case"array":if(typeof o[0]==="string"){return e(n[o[0]](),o[1])};default:return s}};while(r.match(/[cDFhnrRtTxX]/)){r=r.replace(/([cDFhnrRtTxX])/g,a)}var l=r.replace(/([aAbBCdegGHIjklmMpPsSuUVwWyYzZ])/g,f);a=f=undefined;return l}};return t.format}();
 
     mango.jsVerbatim = function(str) {
         /* Displays a javascript string without escaping any special characters.  */
@@ -524,6 +529,10 @@
             mango.tags._for_closing_tags.push('}');
             return "\n " + tag + " } else { \n";
         },
+        now: function(args) {
+            "use strict";
+            return mango.tags._getOutputString('mango.strftime(new Date(), ' + args[0] + ')');
+        },
         apply_filters: function(args) {
             /* Runs through list of template filters and applies filters when | is found. */
             var i,
@@ -643,3 +652,4 @@
     };
 }).call(window);
 //}).call(this);
+
