@@ -68,6 +68,13 @@
                     template = mango.template(templateHTML),
                     $target = $(this).parent().siblings('.client-test');
                 $target.html(template(page_context));
+
+                for (var i=0; i < $templates.length; i++) {
+                    if ($templates[i].innerHTML === templateHTML) {
+                        $templates[i].cache = template;
+                        console.log('debug:\t$templates['+i+'].cache.source');
+                    }
+                }
             });
 
             /*
