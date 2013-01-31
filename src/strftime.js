@@ -16,55 +16,123 @@ var strftime = (function () {
         return x.toString();
     };
 
+    var getDSTStatus = function(dstOffset) {
+        var 	i, offset,
+            d = new Date(),
+            DST = d.getTimezoneOffset(),
+            nonDST = d.getTimezoneOffset();
+        for (i = 0; i < 365; i++) {
+            d.setDate(i);
+            offset = d.getTimezoneOffset();
+            if (offset <= DST) {
+                DST = offset;
+            } else {
+                nonDST = offset;
+            }
+        }
+        if (DST === nonDST) {
+            return 0;
+        } else {
+            return (DST === dstOffset) ? 1 : 0;
+        }
+    };
+
     var Dt = {
         formats: {
-            a: function (d, l) { return l.a[d.getDay()]; },
-            A: function (d, l) { return l.A[d.getDay()]; },
-            b: function (d, l) { return l.b[d.getMonth()]; },
-            B: function (d, l) { return l.B[d.getMonth()]; },
-            C: function (d) { return xPad(parseInt(d.getFullYear()/100, 10), 0); },
-            d: ["getDate", "0"],
-            e: ["getDate", " "],
-            g: function (d) { return xPad(parseInt(Dt.formats.G(d)%100, 10), 0); },
-            G: function (d) {
-                var y = d.getFullYear();
-                var V = parseInt(Dt.formats.V(d), 10);
-                var W = parseInt(Dt.formats.W(d), 10);
+            a: function (d, l) { return l.P[d.getHours() >= 12 ? 1 : 0 ]; }, //am or pm
+            A: function (d, l) { return l.p[d.getHours() >= 12 ? 1 : 0 ]; }, //AM or PM
+            b: function (d, l) { return l.b[d.getMonth()].toLowerCase(); }, //Month, textual, 3 letters, lowercase
+            d: ["getDate", "0"], //day of month; two digits, leading zeroes
+            D: function (d, l) { return l.a[d.getDay()]; }, //Day of the week, textual, 3 letters
+            e: function (d) {
+                var tz = d.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/, "$2").replace(/[a-z ]/g, "");
+                if(tz.length > 4) {
+                    tz = Dt.formats.z(d);
+                }
+                return tz; //TODO:  this is not reliable for unnamed timezones (such as UTC-11)
+            },  //timezone name
+            E: function (d, l) { return l.B[d.getMonth()]; }, //Verbose Month
+            f: function(d){
+                var H = Dt.formats.g(d),
+                    M = xPad(d.getMinutes(), 0);
+                if (parseInt(M, 10) === 0) {
+                    return H;
+                }
+                return H + ':' + M;
 
-                if(W > V) {
+            }, // time in 12-hours and minutes, with minutes left off if zero
+            F: function (d, l) { return l.B[d.getMonth()]; }, //Verbose Month
+            g: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, ""); }, //hour, 12-hr, no leading zeroes
+            G: function (d) { return d.getHours();}, //hour, 24-hr, no leading zeroes
+            h: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, 0); }, //hour, 12-hr format
+            H: function (d) { return xPad(d.getHours(),0)}, //hour, 24-hr format
+            i: ["getMinutes", "0"], //minutes
+            I: function (d) {
+                return getDSTStatus(d.getTimezoneOffset());
+            }, //DST in effect or not.
+            j: "getDate",
+            k: ["getHours", " "], //not implemented
+            l: function (d, l) {return l.A[d.getDay()];}, //hour, 12-hr, no leading zeroes
+            L: function(d) {
+                var y = d.getFullYear();
+                return (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0));
+            },
+            m: function (d) { return xPad(d.getMonth()+1, 0); }, //2-digit month with leading zeroes
+            M: function (d, l) { return l.b[d.getMonth()]; }, //Month, textual, 3 letters
+            n: function (d) { return d.getMonth()+1; }, //2-digit month without leading zeroes
+            N: function (d, l) { return l.bb[d.getMonth()]; }, //month abbreviation in AP style
+            o: function (d) {
+                var y = d.getFullYear();
+                var W = parseInt(Dt.formats.W(d), 10);
+                var V = parseInt(Dt.formats.V(d), 10);
+
+                if(V > W) {
                     y++;
                 } else if(W===0 && V>=52) {
                     y--;
                 }
 
                 return y;
-            },
-            H: ["getHours", "0"],
-            I: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, 0); },
-            j: function (d) {
-                var gmd_1 = new Date("" + d.getFullYear() + "/1/1 GMT");
-                var gmdate = new Date("" + d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate() + " GMT");
-                var ms = gmdate - gmd_1;
-                var doy = parseInt(ms/60000/60/24, 10)+1;
-                return xPad(doy, 0, 100);
-            },
-            k: ["getHours", " "],
-            l: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, " "); },
-            m: function (d) { return xPad(d.getMonth()+1, 0); },
-            M: ["getMinutes", "0"],
-            p: function (d, l) { return l.p[d.getHours() >= 12 ? 1 : 0 ]; },
-            P: function (d, l) { return l.P[d.getHours() >= 12 ? 1 : 0 ]; },
-            s: function (d, l) { return parseInt(d.getTime()/1000, 10); },
-            S: ["getSeconds", "0"],
-            u: function (d) { var dow = d.getDay(); return dow===0?7:dow; },
-            U: function (d) {
-                var doy = parseInt(Dt.formats.j(d), 10);
-                var rdow = 6-d.getDay();
-                var woy = parseInt((doy+rdow)/7, 10);
-                return xPad(woy, 0);
-            },
+            }, //ISO-8601 week-numbering year...
+            O: function (d) {
+                var o = d.getTimezoneOffset();
+                var H = xPad(parseInt(Math.abs(o/60), 10), 0);
+                var M = xPad(Math.abs(o%6), 0);
+                return (o>0?"-":"+") + H + M;
+            }, //difference to GMT in hours
+            r: function(d){return d;}, //rfc 2822 date
+            s: ["getSeconds", "0"],  //2-digit seconds with leading zeroes
+            S: function(d,l) {
+                var pos,
+                    day = d.getDate();
+                pos = day % 10;
+                if (day >= 11 && day <= 13) {
+                    pos = 0;
+                } else if (pos > 3) {
+                    pos = 0;
+                }
+                return l.S[pos];
+            }, //English ordinal suffix for day of the month, 2 characters
+            t: function (d, l) {
+                var m = l.t[d.getMonth()];
+                if (m == 28 && Dt.formats.L) {
+                    return 29;
+                }
+                return m;
+            }, //number of days in a given month
+            T: function(){return Dt.formats.e(new Date());}, //Time Zone
+            u: function (d) { return d.getMilliseconds() * 1000; }, //microseconds
+            U: function (d, l) { return parseInt(d.getTime()/1000, 10); }, //seconds since Epoch
             V: function (d) {
-                var woy = parseInt(Dt.formats.W(d), 10);
+                var doy = parseInt(Dt.formats.z(d), 10);
+                var dow = d.getDay();
+                var rdow = 7-((dow===0) ? 7 : dow);
+                var woy = parseInt((doy+rdow)/7, 10);
+                return xPad(woy, 0, 10);
+            }, // week of year; not implemented as such in Django.
+            w: "getDay", //day of week; digits without leading zeroes
+            W: function (d) {
+                var woy = parseInt(Dt.formats.V(d), 10);
                 var dow1_1 = (new Date("" + d.getFullYear() + "/1/1")).getDay();
                 // First week is 01 and not 00 as in the case of %U and %W,
                 // so we add 1 to the final result except if day 1 of the year
@@ -81,45 +149,35 @@ var strftime = (function () {
                     idow = Dt.formats.V(new Date("" + (d.getFullYear()-1) + "/12/31"));
                 }
 
-                return xPad(idow, 0);
-            },
-            w: "getDay",
-            W: function (d) {
-                var doy = parseInt(Dt.formats.j(d), 10);
-                var rdow = 7-Dt.formats.u(d);
-                var woy = parseInt((doy+rdow)/7, 10);
-                return xPad(woy, 0, 10);
-            },
-            y: function (d) { return xPad(d.getFullYear()%100, 0); },
-            Y: "getFullYear",
+                return idow;
+            }, // ISO-8601 week number of year; indexed to mondays (got a case of the mondays)
+            y: function (d) { return xPad(d.getFullYear()%100, 0); }, //2-digit year
+            Y: "getFullYear", //4-digit year
             z: function (d) {
-                var o = d.getTimezoneOffset();
-                var H = xPad(parseInt(Math.abs(o/60), 10), 0);
-                var M = xPad(Math.abs(o%60), 0);
-                return (o>0?"-":"+") + H + M;
-            },
+                var gmd_1 = new Date("" + d.getFullYear() + "/1/1 GMT");
+                var gmdate = new Date("" + d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate() + " GMT");
+                var ms = gmdate - gmd_1;
+                var doy = parseInt(ms/60000/60/24, 10)+1;
+                return xPad(doy, 0, 0);
+            }, // day of year 0-365
             Z: function (d) {
-                var tz = d.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/, "$2").replace(/[a-z ]/g, "");
-                if(tz.length > 4) {
-                    tz = Dt.formats.z(d);
-                }
-                return tz;
-            },
+                var o = d.getTimezoneOffset();
+                var H = xPad(parseInt(Math.abs(o*.6), 10), 0);
+                var M = xPad(Math.abs(o%6), 0);
+                return (o>0?"-":"+") + H + M;
+            }, //Time zone offset in seconds
             "%": function (d) { return "%"; }
         },
 
         aggregates: {
-            c: "locale",
-            D: "m/d/y",
-            F: "Y-m-d",
-            h: "b",
-            n: "\n",
-            r: "I:M:S p",
-            R: "H:M",
-            t: "\t",
-            T: "H:M:S",
-            x: "locale",
-            X: "locale"
+            c: "o-m-dTg:i:s.uO", //iso 8601 format
+            r: "D, d M o H:i:s O", //rfc 2822 date
+            R: "H:M", //remove
+            t: "\t", //leave
+            T: "H:M:S", //remove
+            x: "locale", //remove
+            P: "g:i a" //remove
+
             //"+": "a b e T Z Y"
         },
         format : function (oDate, format) {
@@ -136,12 +194,15 @@ var strftime = (function () {
                 a:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
                 A:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
                 b:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+                bb:["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."], //ap months
                 B:["January","February","March","April","May","June","July","August","September","October","November","December"],
                 c:"a, b d, Y l:M:S p Z",
                 p:["AM","PM"],
-                P:["am","pm"],
+                P:["a.m.","p.m."],
+                S:['th', 'st', 'nd', 'rd'],
+                t:["31","28","31","30","31","30","31","31","30","31","30","31"],
                 x:"m/d/y",
-                X:"l:M:S p"
+                X:"l:M p"
             };
 
             var replace_aggs = function (m0, m1) {
@@ -171,12 +232,12 @@ var strftime = (function () {
             };
 
             // First replace aggregates (run in a loop because an agg may be made up of other aggs)
-            while(format.match(/[cDFhnrRtTxX]/)) {
-                format = format.replace(/([cDFhnrRtTxX])/g, replace_aggs);
+            while(format.match(/[crPRxX]/)) {
+                format = format.replace(/([crPRxX])/g, replace_aggs);
             }
 
             // Now replace formats (do not run in a loop otherwise %%a will be replace with the value of %a)
-            var str = format.replace(/([aAbBCdegGHIjklmMpPsSuUVwWyYzZ])/g, replace_formats);
+            var str = format.replace(/([aAbBCdDeEfFgGhHiIjklLmMnNoOsStTuUVwWyYzZ])/g, replace_formats);
 
             replace_aggs = replace_formats = undefined;
 

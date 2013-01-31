@@ -1,7 +1,43 @@
 <div class="test">
     <h5>Now tag.</h5>
-    {% now "d-m-Y" %}<br>
-    {% now "%d-%m-%Y" %}<br>
-    It is {% now "jS F Y H:i" %}<br>
-    It is the {% now "jS o\f F" %}<br>
+    a: {% now "a" %} - <span class="note">'a.m.' or 'p.m.' (Note that this is slightly different than PHP's output, because this includes periods to match Associated Press style.)</span><br>
+    A: {% now "A" %} - <span class="note">'AM' or 'PM'.</span><br>
+    b: {% now "b" %} - <span class="note">Month, textual, 3 letters, lowercase.</span><br>
+    {# B: {% now "B" %} - <span class="note">Not implemented.</span><br> #}
+    c: {% now "c" %} - <span class="note">ISO 8601 format. (Note: unlike others formatters, such as "Z", "O" or "r", the "c" formatter will not add timezone offset if value is a naive datetime (see datetime.tzinfo).</span><br>
+    d: {% now "d" %} - <span class="note">Day of the month, 2 digits with leading zeros.</span><br>
+    D: {% now "D" %} - <span class="note">Day of the week, textual, 3 letters.</span><br>
+    e: {% now "e" %} - <span class="note">Timezone name. Could be in any format, or might return an empty string, depending on the datetime.</span><br>
+    E: {% now "E" %} - <span class="note">Month, locale specific alternative representation usually used for long date representation.</span><br>
+    f: {% now "f" %} - <span class="note">Time, in 12-hour hours and minutes, with minutes left off if they're zero. Proprietary extension.</span><br>
+    F: {% now "F" %} - <span class="note">Month, textual, long.</span><br>
+    g: {% now "g" %} - <span class="note">Hour, 12-hour format without leading zeros.</span><br>
+    G: {% now "G" %} - <span class="note">Hour, 24-hour format without leading zeros.</span><br>
+    h: {% now "h" %} - <span class="note">Hour, 12-hour format.</span><br>
+    H: {% now "H" %} - <span class="note">Hour, 24-hour format.</span><br>
+    i: {% now "i" %} - <span class="note">Minutes.</span><br>
+    I: {% now "I" %} - <span class="note">Daylight Savings Time, whether it's in effect or not.</span><br>
+    j: {% now "j" %} - <span class="note">Day of the month without leading zeros.</span><br>
+    l: {% now "l" %} - <span class="note">Day of the week, textual, long.</span><br>
+    L: {% now "L" %} - <span class="note">Boolean for whether it's a leap year.</span><br>
+    m: {% now "m" %} - <span class="note">Month, 2 digits with leading zeros.</span><br>
+    M: {% now "M" %} - <span class="note">Month, textual, 3 letters.</span><br>
+    n: {% now "n" %} - <span class="note">Month without leading zeros.</span><br>
+    N: {% now "N" %} - <span class="note">Month abbreviation in Associated Press style. Proprietary extension.</span><br>
+    o: {% now "o" %} - <span class="note">ISO-8601 week-numbering year, corresponding to the ISO-8601 week number (W)</span><br>
+    O: {% now "O" %} - <span class="note">Difference to Greenwich time in hours.</span><br>
+    P: {% now "P" %} - <span class="note">Time, in 12-hour hours, minutes and 'a.m.'/'p.m.', with minutes left off if they're zero and the special-case strings 'midnight' and 'noon' if appropriate. Proprietary extension.</span><br>
+    r: {% now "r" %} - <span class="note">RFC 2822 formatted date.</span><br>
+    s: {% now "s" %} - <span class="note">Seconds, 2 digits with leading zeros.</span><br>
+    S: {% now "S" %} - <span class="note">English ordinal suffix for day of the month, 2 characters.</span><br>
+    t: {% now "t" %} - <span class="note">Number of days in the given month.</span><br>
+    T: {% now "T" %} - <span class="note">Time zone of this machine.</span><br>
+    u: {% now "u" %} - <span class="note">Microseconds.</span><br>
+    U: {% now "U" %} - <span class="note">Seconds since the Unix Epoch (January 1 1970 00:00:00 UTC).</span><br>
+    w: {% now "w" %} - <span class="note">Day of the week, digits without leading zeros.</span><br>
+    W: {% now "W" %} - <span class="note">ISO-8601 week number of year, with weeks starting on Monday.</span><br>
+    y: {% now "y" %} - <span class="note">Year, 2 digits.</span><br>
+    Y: {% now "Y" %} - <span class="note">Year, 4 digits.</span><br>
+    z: {% now "z" %} - <span class="note">Day of the year.</span><br>
+    Z: {% now "Z" %} - <span class="note">Time zone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive.</span><br>
 </div>
