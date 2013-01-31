@@ -1,5 +1,6 @@
 from json import dumps
 import os
+import datetime
 from django.views.generic.base import TemplateView
 
 class Home(TemplateView):
@@ -48,6 +49,7 @@ class Home(TemplateView):
             'includes': self.get_includes('relative'),
             'ssis': self.get_includes('absolute'),
             'plans': plans,
+            'birthday': datetime.datetime(2012, 03, 11, 16, 44, 22),
             'plans_empty': empties,
             'dict': {"Key1": "Value1", 2: "Value2"},
             'numerator': 10,
@@ -74,5 +76,7 @@ class Home(TemplateView):
             'num_walruses': 3,
             'url': 'http://www.example.com/',
         }
-        context.update({"page_context": dumps(context)})
+
+        dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None #http://stackoverflow.com/questions/455580/json-datetime-between-python-and-javascript
+        context.update({"page_context": dumps(context, default=dthandler)})
         return context

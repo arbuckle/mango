@@ -170,7 +170,7 @@ var strftime = (function () {
         },
 
         aggregates: {
-            c: "o-m-dTg:i:s.uO", //iso 8601 format
+            c: "o-m-deg:i:s.uO", //iso 8601 format
             r: "D, d M o H:i:s O", //rfc 2822 date
             R: "H:M", //remove
             t: "\t", //leave
