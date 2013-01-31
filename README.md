@@ -3,7 +3,7 @@ mango.js
 DRY client-side templates for Django.
 -------------------------------------
 
-**Problem**:    When writing a thick-client application, templates must be duplicated in a client-side template language
+**Problem**:    When writing a thick-client application, templates must be *duplicated* in a client-side template language
 in order to avoid the first-load tradeoff.
 
 **Solution**:   mango.js.  Client-side rendering for Django templates.
@@ -14,49 +14,102 @@ in order to avoid the first-load tradeoff.
 * Mango.js can be easily updated to support custom tags and filters.
 * Mango.js ignores missing tags and filters, so pre-processed input context does not result in errors.
 
+
 ###[Check out the demo](http://catto5k.com/mango/demo.html)
 
-*Development is not yet complete TODOs:*
-- {% ifchanged %}
-- {% ifequal %}
-- {% ifnotequal %}
-- {% include %} (*crazy!*)
-- {% now %}
-- {% spaceless %}
-- {% url %}
-- {% verbatim %}
-- Date filters.
-- Fix linebreaksbr and linebreaks
-- Maybe refactor the whole thing, since it's extremely difficult to debug
 
-
-
-Usage.
+Getting Started
 ---------------
+
+Include your template in a script tag to deliver it to the browser.
+```javascript
+<script id="hello" type="text/mango-template">
+    <h2>{{ heading }}</h2>
+    <p>
+        {{ content }}
+    </p>
+</script>
+```
+
+Instantiate a template using `mango.template`
+```javascript
+var source =  $('#hello').html();
+var template = mango.template(source);
+```
+
+Call the compiled template with a context variable in order to render it to HTML.
+```javascript
+var context = {heading: "Free Cats", content: "Just complete this online survey!"};
+var html = template(context);
+// Append the rendered template to the DOM
+$(body).append(html);
+```
+
+`{{ Expressions }}` correspond directly to variables passed in the context object.
+```
+There are {{ num_lights }} lights!
+```
+
+`{% Statements %}` are used to evaluate conditional statements, iterate over Arrays and Dicts, and perform comparisons.
+```
+{% if picard == True %}
+    There are 4 lights!
+{% else %}
+    Ugggg.....
+{% endif %}
+
+{% for planet in solar_system %}
+    {% if planet|lower != 'pluto' %}
+        {{ planet }}{% if not forloop.last %},{%endif%}
+    {% endif %}
+{% endfor %}
+
+{% for breed, weight in dogs.items %}
+    {{ breed }}: {{ weight }}kg <br>
+{% %}
+```
+
+`{{ ...|filters }}` are transformations that can be applied to any expression using | syntax.  Filters are chainable
+and accept one argument at most.
+```
+{{ 'YELL'|lower }}, {{ 'whisper'|upper }}, {{ title|slugify }}, {{ birthday|date:"Y-m-d" }}
+```
+
+For more example, check out Django's [template documentation](https://docs.djangoproject.com/en/dev/ref/templates/builtins/).
+Mango.js is intended to be a near-feature-complete port of functionality, such that any template which compiles in Django
+will work with Mango.
+
+
+Re-Using Templates
+------------------
+
 1. Update your views to return the context in JSON format:
     ```
     context.update({"page_context": json.dumps(context)})
     ```
 
-2. Expose a verbatim version of your template to the DOM using the {% ssi %} tag:
+2. Deliver a verbatim version of your existing template to the DOM using the {% ssi %} tag:
     ```
     <script type="text/template" id="MyClientSideTemplate">
         {% ssi "/home/html/application/templates/my_template.html" %}
     </script>
     ```
 
-3.  Create a mango template object and grab the context variable:
+3.  Compile a mango template object and grab the context variable:
     ```
     var templateSource = document.getElementById('MyClientSideTemplate').innerHTML,
         myTemplate = mango.template(templateSource);
 
     var page_context = JSON.parse("{{ page_context|escapejs }}");
     ```
+
 4.  Render your template and append it to the DOM:
     ```
     var renderedTemplate = myTemplate(page_context);
     document.querySelector('body').innnerHTML = renderedTemplate;
     ```
+
+
 
 Caveats.
 --------
@@ -169,3 +222,19 @@ is passed to it.
     return ret;
 }
 ```
+
+
+
+*Development is not yet complete. TODOs:*
+- forloop meta variables! (how could I have forgotten?!)
+- {% ifchanged %}
+- {% ifequal %}
+- {% ifnotequal %}
+- {% include %} (*crazy!*)
+- {% spaceless %}
+- {% url %}
+- {% verbatim %}
+- Fix linebreaksbr and linebreaks
+- Maybe refactor the whole thing, since it's extremely difficult to debug
+
+
