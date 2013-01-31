@@ -641,6 +641,7 @@
 		if (data) return render(data, mango);
 		
 		var template = function(data) {
+            data = data || {};
 			return render.call(this, data, mango);
 		};
 
