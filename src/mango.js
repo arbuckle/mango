@@ -27,16 +27,16 @@
     };
     var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
     var htmlEscapes = {
-        "<":	"&lt;",
-        ">":	"&gt;",
-        "'":	"&#39;",
-        "\"":	"&quot;",
-        "&":	"&amp;"
+        "<":    "&lt;",
+        ">":    "&gt;",
+        "'":    "&#39;",
+        "\"":    "&quot;",
+        "&":    "&amp;"
     };
     var htmlEscaper = /\'|\"|>|<|&/g;
     var noMatch = /(.)^/;
 
-    mango.strftime = function(){var e=function(e,t,n){if(typeof n==="undefined"){n=10}t=t+"";for(;parseInt(e,10)<n&&n>1;n/=10){e=t+e}return e.toString()};var t=function(e){var t,n,r=new Date,i=r.getTimezoneOffset(),s=r.getTimezoneOffset();for(t=0;t<365;t++){r.setDate(t);n=r.getTimezoneOffset();if(n<=i){i=n}else{s=n}}if(i===s){return 0}else{return i===e?1:0}};var n={formats:{a:function(e,t){return t.P[e.getHours()>=12?1:0]},A:function(e,t){return t.p[e.getHours()>=12?1:0]},b:function(e,t){return t.b[e.getMonth()].toLowerCase()},d:["getDate","0"],D:function(e,t){return t.a[e.getDay()]},e:function(e){var t=e.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/,"$2").replace(/[a-z ]/g,"");if(t.length>4){t=n.formats.z(e)}return t},E:function(e,t){return t.B[e.getMonth()]},f:function(t){var r=n.formats.g(t),i=e(t.getMinutes(),0);if(parseInt(i,10)===0){return r}return r+":"+i},F:function(e,t){return t.B[e.getMonth()]},g:function(t){var n=t.getHours()%12;return e(n===0?12:n,"")},G:function(e){return e.getHours()},h:function(t){var n=t.getHours()%12;return e(n===0?12:n,0)},H:function(t){return e(t.getHours(),0)},i:["getMinutes","0"],I:function(e){return t(e.getTimezoneOffset())},j:"getDate",k:["getHours"," "],l:function(e,t){return t.A[e.getDay()]},L:function(e){var t=e.getFullYear();return t%4===0&&(t%100!==0||t%400===0)},m:function(t){return e(t.getMonth()+1,0)},M:function(e,t){return t.b[e.getMonth()]},n:function(e){return e.getMonth()+1},N:function(e,t){return t.bb[e.getMonth()]},o:function(e){var t=e.getFullYear();var r=parseInt(n.formats.W(e),10);var i=parseInt(n.formats.V(e),10);if(i>r){t++}else if(r===0&&i>=52){t--}return t},O:function(t){var n=t.getTimezoneOffset();var r=e(parseInt(Math.abs(n/60),10),0);var i=e(Math.abs(n%6),0);return(n>0?"-":"+")+r+i},r:function(e){return e},s:["getSeconds","0"],S:function(e,t){var n,r=e.getDate();n=r%10;if(r>=11&&r<=13){n=0}else if(n>3){n=0}return t.S[n]},t:function(e,t){var r=t.t[e.getMonth()];if(r==28&&n.formats.L){return 29}return r},T:function(){return n.formats.e(new Date)},u:function(e){return e.getMilliseconds()*1e3},U:function(e,t){return parseInt(e.getTime()/1e3,10)},V:function(t){var r=parseInt(n.formats.z(t),10);var i=t.getDay();var s=7-(i===0?7:i);var o=parseInt((r+s)/7,10);return e(o,0,10)},w:"getDay",W:function(e){var t=parseInt(n.formats.V(e),10);var r=(new Date(""+e.getFullYear()+"/1/1")).getDay();var i=t+(r>4||r<=1?0:1);if(i===53&&(new Date(""+e.getFullYear()+"/12/31")).getDay()<4){i=1}else if(i===0){i=n.formats.V(new Date(""+(e.getFullYear()-1)+"/12/31"))}return i},y:function(t){return e(t.getFullYear()%100,0)},Y:"getFullYear",z:function(t){var n=new Date(""+t.getFullYear()+"/1/1 GMT");var r=new Date(""+t.getFullYear()+"/"+(t.getMonth()+1)+"/"+t.getDate()+" GMT");var i=r-n;var s=parseInt(i/6e4/60/24,10)+1;return e(s,0,0)},Z:function(t){var n=t.getTimezoneOffset();var r=e(parseInt(Math.abs(n*.6),10),0);var i=e(Math.abs(n%6),0);return(n>0?"-":"+")+r+i},"%":function(e){return"%"}},aggregates:{c:"o-m-dTg:i:s.uO",r:"D, d M o H:i:s O",R:"H:M",t:"	",T:"H:M:S",x:"locale",P:"g:i a"},format:function(t,r){r=r||"Y-m-d";if(!t.constructor===Date){return t.constructor?t:""}var i,s,o,u;i={a:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],A:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],b:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],bb:["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."],B:["January","February","March","April","May","June","July","August","September","October","November","December"],c:"a, b d, Y l:M:S p Z",p:["AM","PM"],P:["a.m.","p.m."],S:["th","st","nd","rd"],t:["31","28","31","30","31","30","31","31","30","31","30","31"],x:"m/d/y",X:"l:M p"};var a=function(e,t){if(s&&t==="r"){return i[t]}var r=n.aggregates[t];return r==="locale"?i[t]:r};var f=function(r,s){var o=n.formats[s],u=o.constructor===Array?"array":typeof o;switch(u){case"string":return t[o]();case"function":return o.call(t,t,i);case"array":if(typeof o[0]==="string"){return e(t[o[0]](),o[1])};default:return s}};while(r.match(/[crPRxX]/)){r=r.replace(/([crPRxX])/g,a)}var l=r.replace(/([aAbBCdDeEfFgGhHiIjklLmMnNoOsStTuUVwWyYzZ])/g,f);a=f=undefined;return l}};return n.format}();
+    mango.strftime = function(){var e=function(e,t,n){if(typeof n==="undefined"){n=10}t=t+"";for(;parseInt(e,10)<n&&n>1;n/=10){e=t+e}return e.toString()};var t=function(e){var t,n,r=new Date,i=r.getTimezoneOffset(),s=r.getTimezoneOffset();for(t=0;t<365;t++){r.setDate(t);n=r.getTimezoneOffset();if(n<=i){i=n}else{s=n}}if(i===s){return 0}else{return i===e?1:0}};var n={formats:{a:function(e,t){return t.P[e.getHours()>=12?1:0]},A:function(e,t){return t.p[e.getHours()>=12?1:0]},b:function(e,t){return t.b[e.getMonth()].toLowerCase()},d:["getDate","0"],D:function(e,t){return t.a[e.getDay()]},e:function(e){var t=e.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/,"$2").replace(/[a-z ]/g,"");if(t.length>4){t=n.formats.z(e)}return t},E:function(e,t){return t.B[e.getMonth()]},f:function(t){var r=n.formats.g(t),i=e(t.getMinutes(),0);if(parseInt(i,10)===0){return r}return r+":"+i},F:function(e,t){return t.B[e.getMonth()]},g:function(t){var n=t.getHours()%12;return e(n===0?12:n,"")},G:function(e){return e.getHours()},h:function(t){var n=t.getHours()%12;return e(n===0?12:n,0)},H:function(t){return e(t.getHours(),0)},i:["getMinutes","0"],I:function(e){return t(e.getTimezoneOffset())},j:"getDate",k:["getHours"," "],l:function(e,t){return t.A[e.getDay()]},L:function(e){var t=e.getFullYear();return t%4===0&&(t%100!==0||t%400===0)},m:function(t){return e(t.getMonth()+1,0)},M:function(e,t){return t.b[e.getMonth()]},n:function(e){return e.getMonth()+1},N:function(e,t){return t.bb[e.getMonth()]},o:function(e){var t=e.getFullYear();var r=parseInt(n.formats.W(e),10);var i=parseInt(n.formats.V(e),10);if(i>r){t++}else if(r===0&&i>=52){t--}return t},O:function(t){var n=t.getTimezoneOffset();var r=e(parseInt(Math.abs(n/60),10),0);var i=e(Math.abs(n%6),0);return(n>0?"-":"+")+r+i},r:function(e){return e},s:["getSeconds","0"],S:function(e,t){var n,r=e.getDate();n=r%10;if(r>=11&&r<=13){n=0}else if(n>3){n=0}return t.S[n]},t:function(e,t){var r=t.t[e.getMonth()];if(r==28&&n.formats.L){return 29}return r},T:function(){return n.formats.e(new Date)},u:function(e){return e.getMilliseconds()*1e3},U:function(e,t){return parseInt(e.getTime()/1e3,10)},V:function(t){var r=parseInt(n.formats.z(t),10);var i=t.getDay();var s=7-(i===0?7:i);var o=parseInt((r+s)/7,10);return e(o,0,10)},w:"getDay",W:function(e){var t=parseInt(n.formats.V(e),10);var r=(new Date(""+e.getFullYear()+"/1/1")).getDay();var i=t+(r>4||r<=1?0:1);if(i===53&&(new Date(""+e.getFullYear()+"/12/31")).getDay()<4){i=1}else if(i===0){i=n.formats.V(new Date(""+(e.getFullYear()-1)+"/12/31"))}return i},y:function(t){return e(t.getFullYear()%100,0)},Y:"getFullYear",z:function(t){var n=new Date(""+t.getFullYear()+"/1/1 GMT");var r=new Date(""+t.getFullYear()+"/"+(t.getMonth()+1)+"/"+t.getDate()+" GMT");var i=r-n;var s=parseInt(i/6e4/60/24,10)+1;return e(s,0,0)},Z:function(t){var n=t.getTimezoneOffset();var r=e(parseInt(Math.abs(n*.6),10),0);var i=e(Math.abs(n%6),0);return(n>0?"-":"+")+r+i},"%":function(e){return"%"}},aggregates:{c:"o-m-dTg:i:s.uO",r:"D, d M o H:i:s O",R:"H:M",t:"    ",T:"H:M:S",x:"locale",P:"g:i a"},format:function(t,r){r=r||"Y-m-d";if(!t.constructor===Date){return t.constructor?t:""}var i,s,o,u;i={a:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],A:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],b:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],bb:["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."],B:["January","February","March","April","May","June","July","August","September","October","November","December"],c:"a, b d, Y l:M:S p Z",p:["AM","PM"],P:["a.m.","p.m."],S:["th","st","nd","rd"],t:["31","28","31","30","31","30","31","31","30","31","30","31"],x:"m/d/y",X:"l:M p"};var a=function(e,t){if(s&&t==="r"){return i[t]}var r=n.aggregates[t];return r==="locale"?i[t]:r};var f=function(r,s){var o=n.formats[s],u=o.constructor===Array?"array":typeof o;switch(u){case"string":return t[o]();case"function":return o.call(t,t,i);case"array":if(typeof o[0]==="string"){return e(t[o[0]](),o[1])};default:return s}};while(r.match(/[crPRxX]/)){r=r.replace(/([crPRxX])/g,a)}var l=r.replace(/([aAbBCdDeEfFgGhHiIjklLmMnNoOsStTuUVwWyYzZ])/g,f);a=f=undefined;return l}};return n.format}();
 
     mango.jsVerbatim = function(str) {
         /* Displays a javascript string without escaping any special characters.  */
@@ -367,7 +367,7 @@
         return (val) ? true : false;
     };
 
-	mango.tags = {
+    mango.tags = {
         _for_closing_tags: [],
         _getOutputString: function(val) {
             //Helper abstraction for writing to the DOM from within a template tag.
@@ -576,8 +576,8 @@
             }
 
         }
-	};
-	
+    };
+    
     mango.templateSettings = {
         comment: /{#([\s\S]+?)#}/g,
         tag: /{%([\s\S]+?)%}/g,
@@ -609,12 +609,12 @@
                 .replace(escaper, function(match) {return '\\' + escapes[match]; });
 
             if (tvar) {
-				tvar = mango.filters.apply(tvar);
-				source += "'+\n((__t=(" + tvar + "))==null?'':__t)+\n'";
+                tvar = mango.filters.apply(tvar);
+                source += "'+\n((__t=(" + tvar + "))==null?'':__t)+\n'";
             }
             if (tag) {
                 tag = mango.tags.apply(tag);
-		        source += "';\n" + tag + "\n__p+='";
+                source += "';\n" + tag + "\n__p+='";
             }
             if (comment) {
                 /* this is an easy one.  do nothing. */
@@ -624,31 +624,31 @@
         });
         source += "';\n";
 
-		// If a variable is not specified, place data values in local scope.
-		if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
+        // If a variable is not specified, place data values in local scope.
+        if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
 
-		source = "var __t,__p='',__j=Array.prototype.join," +
-			"print=function(){__p+=__j.call(arguments,'');};\n" +
-			source + "return __p;\n";
+        source = "var __t,__p='',__j=Array.prototype.join," +
+            "print=function(){__p+=__j.call(arguments,'');};\n" +
+            source + "return __p;\n";
 
-		try {
-			var render = new Function(undefined || 'obj', 'mango', source);
-		} catch (e) {
-			e.source = source;
-			throw e;
-		}
+        try {
+            var render = new Function(undefined || 'obj', 'mango', source);
+        } catch (e) {
+            e.source = source;
+            throw e;
+        }
 
-		if (data) return render(data, mango);
-		
-		var template = function(data) {
+        if (data) return render(data, mango);
+        
+        var template = function(data) {
             data = data || {};
-			return render.call(this, data, mango);
-		};
+            return render.call(this, data, mango);
+        };
 
-		// Provide the compiled function source as a convenience for precompilation.
-		template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';
+        // Provide the compiled function source as a convenience for precompilation.
+        template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';
 
-		return template;
+        return template;
 
     };
 }).call(window);
