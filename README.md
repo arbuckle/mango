@@ -45,19 +45,33 @@ var html = template(context);
 $(body).append(html);
 ```
 
+This renders the following HTML:
+    <h2>Free Cats</h2>
+    <p>
+        Just complete this online survey!
+    </p>
+
+
+###Template Authoring
+
 `{{ Expressions }}` correspond directly to variables passed in the context object.
 ```
 There are {{ num_lights }} lights!
 ```
 
 `{% Statements %}` are used to evaluate conditional statements, iterate over Arrays and Dicts, and perform comparisons.
+
+Conditions:
 ```
 {% if picard == True %}
     There are 4 lights!
 {% else %}
     Ugggg.....
 {% endif %}
+```
 
+Looping over arrays, dictionaries:
+```
 {% for planet in solar_system %}
     {% if planet|lower != 'pluto' %}
         {{ planet }}{% if not forloop.last %},{%endif%}
@@ -69,6 +83,7 @@ There are {{ num_lights }} lights!
 {% %}
 ```
 
+####Filters
 `{{ ...|filters }}` are transformations that can be applied to any expression using | syntax.  Filters are chainable
 and accept one argument at most.
 ```
@@ -108,8 +123,6 @@ Re-Using Templates
     var renderedTemplate = myTemplate(page_context);
     document.querySelector('body').innnerHTML = renderedTemplate;
     ```
-
-
 
 Caveats.
 --------
