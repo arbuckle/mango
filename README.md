@@ -46,11 +46,12 @@ $(body).append(html);
 ```
 
 This renders the following HTML:
+```
     <h2>Free Cats</h2>
     <p>
         Just complete this online survey!
     </p>
-
+```
 
 ###Template Authoring
 
