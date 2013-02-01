@@ -493,18 +493,37 @@
                 }
             }
 
+            function getForLoopString() {
+                var ret = '';
+                ret += '\t forloop.counter = forloop.__i + 1;\n';
+                ret += '\t forloop.counter0 = forloop.__i;\n';
+                ret += '\t forloop.revcounter = forloop.__c - forloop.__i;\n';
+                ret += '\t forloop.revcounter0 = forloop.__c - forloop.__i - 1;\n';
+                ret += '\t forloop.first = (forloop.__i === 0) ? true : false;\n';
+                ret += '\t forloop.last = (forloop.__c === forloop.__i + 1) ? true : false;\n';
+                ret += '\t forloop.__i += 1;\n';
+                return ret;
+            }
+
+
             loopVar = loopVar.split('.');
             if (loopVar.length > 1 && loopVar[1].toLowerCase() === 'items') {
                 /* it's a dict! Checking length for {% empty %} and opening loop. */
                 loopVar = loopVar[0];
-                ret = "c=0; \n mango.each(" + loopVar + ", function(__th, i){ \n if ("+loopVar+".hasOwnProperty(i)) {c++;}}); \n";
-                ret += "if (c > 0) { \n ";
+                ret = "forloop.__i=0;\n var __c=0; \n mango.each(" + loopVar + ", function(__th, i, __obj){ \n if ("+loopVar+".hasOwnProperty(i)) {__c++;}}); \n";
+                ret += "if (__c > 0) { \n ";
+                ret += "forloop.__c = __c;\n";
                 ret += "mango.each(" + loopVar + ", function(" + loopArgs[1] + ", " + loopArgs[0] + "){ \n ";
+                ret += getForLoopString();
             } else {
                 loopVar = loopVar[0];
                 /* it's an array! Checking length for {% empty %} and opening loop. */
                 ret = "if (" + loopVar + ".length) { \n ";
-                ret += "mango.each(" + loopVar + ", function(__th, i){ \n";
+                ret += "forloop.__c = " + loopVar + ".length;\n forloop.__i = 0;\n";
+                ret += "forloop.__i=0;\n";
+                ret += "x = forloop;\n";
+                ret += "mango.each(" + loopVar + ", function(__th, i, __obj){ \n";
+                ret += getForLoopString();
                 for (i=0; i < loopArgs.length; i ++) {
                     ret += "if (typeof(" + loopVar + "[" + i + "]) == 'object') { \n";
                     ret += "var " + loopArgs[i] + " = " + loopVar + "[i][" + i + "]; \n";
@@ -598,7 +617,7 @@
         var index = 0;
         var source = "__p+='";
 
-        source += "';\n var False = false,\n\t True = true,\n\tNone = ''; \n__p+='"; /* gross! */
+        source += "';\n var forloop = {parentloop: {}, __i: 0}, False = false,\n\t True = true,\n\tNone = ''; \n__p+='";
         source += "';\n" + 'obj._cycles = {};' + "\n__p+='"; /* gross! */
 
         text.replace(matcher, function(match, tvar, tag, comment, offset) {

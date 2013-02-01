@@ -1,0 +1,52 @@
+<div class="test">
+    <h5>For loop meta variables.</h5>
+    <ol>
+    <strong>List</strong><br>
+        {% for fruit in fruits %}
+            {{ fruit }}<br>
+            , counter0: {{ forloop.counter0 }}
+            , counter: {{ forloop.counter }}<br>
+            , revcounter: {{ forloop.revcounter }}
+            , revcounter0: {{ forloop.revcounter0 }}<br>
+            , first: {{ forloop.first }}
+            , last: {{ forloop.last }}
+            <br>
+        {% endfor %}
+        <hr>
+        <strong>Dict</strong><br>
+        {% for key, value in plans.items %}
+            {{ key }}, {{ value }}<br>
+            , counter0: {{ forloop.counter0 }}
+            , counter: {{ forloop.counter }}<br>
+            , revcounter: {{ forloop.revcounter }}
+            , revcounter0: {{ forloop.revcounter0 }}<br>
+            , first: {{ forloop.first }}
+            , last: {{ forloop.last }}
+            <br>...<br>
+        {% endfor %}
+    <hr>
+        <strong>Nesting</strong><br>
+        defective. inner loop overwrites outer<br>
+        {% for fruit in fruits %}
+            <em>outer</em> {{ fruit }}<br>
+            , counter0: {{ forloop.counter0 }}
+            , counter: {{ forloop.counter }}<br>
+            , revcounter: {{ forloop.revcounter }}
+            , revcounter0: {{ forloop.revcounter0 }}<br>
+            , first: {{ forloop.first }}
+            , last: {{ forloop.last }}
+            <br>
+            {% for num in basic_list%}
+                <em>inner</em> {{ num }}<br>
+                , counter0: {{ forloop.counter0 }}
+                , counter: {{ forloop.counter }}<br>
+                , revcounter: {{ forloop.revcounter }}
+                , revcounter0: {{ forloop.revcounter0 }}<br>
+                , first: {{ forloop.first }}
+                , last: {{ forloop.last }}
+                <br>...<br>
+            {% endfor %}
+        {% endfor %}
+
+    </ol>
+</div>
