@@ -25,64 +25,13 @@
     <hr />
     <div class="one-third column">
         <p>
-            This is a project to determine the feasibility of creating a client-side template rendering engine
-            in javascript, which uses the same syntax as Django templates in order to effectively eliminate
-            the HTML duplication that is seemingly required by modern thick-client applications.
-        </p>
-        <p>
-            <strong>The Problem:</strong><br>
-            Writing client-side templates requires significant code duplication.
-        </p>
-        <p>
-            Here are a couple possible approaches to this problem:
-        </p>
-        <ol>
-            <li>
-                Use Python to take a Django template and render it into a javascript object.  Save compiled JS
-                objects in a JS file whenever a template is modified.
-            </li>
-            <li>
-                Render django templates verbatim to the client.  On the client side, use javascript to parse
-                the Django template language into javascript code.
-            </li>
-        </ol>
-        <p>
-            Both approaches require that statements in one language be interpreted and compiled into valid corresponding
-            equivalents for the other language.  For argument's sake, we'll assume that the difficulty of writing each
-            cross-compiler is the same in each case.
-        </p>
-        <hr>
-        <p>
-            Approach #1 suffers from the need to recompile a separate JS file whenever a template is modified.  This
-            additional complexity would require that the application have knowledge of where to locate static files,
-            either via the STATICFILES framework, or via app-specific settings.
+            To the right you'll find a series of Mango.js examples.  The displayed text is as it appears
+            when rendered by Django.
             <br><br>
-            There may also be a question of how easily a maintainer will be able to understand the compiled JS templates,
-            as well as risks of the templates colliding with assets that are already present on the site.
-            <br><br>
-            Upsides to this approach are that the templates could compile from Django to an existing JS templating language,
-            simplifying the conversion process greatly.  In addition, the compiled JS could be served by the web server
-            rather than by Django.
-            <br><Br>
-            Note that if an existing JS template language is used as the compilation target for this application, a
-            script dependency is created, with potential version incompatibility down the road.
+            You can view the template source code for any example, or click the
+            Render Template button to trigger real-time client-side rendering of the Django template.
         </p>
-        <hr>
-        <p>
-            Approach #2 would ostensibly use a {% verbatim %}{% verbatim %}{% endverbatim %} template tag which would
-            permit includes, allowing a template designer to create a single file in which all client-side templates
-            would be included and rendered as JS templates.  It might be possible to compile this output into a
-            standalone .js file to be served outside of by the web server.
-            <br><br>
-            Using JS to parse Django template language sort of represents a duplication of effort with respect to the
-            fact that two django parsers are required, but it provides clear focus for the JS work, in that the tests
-            that the javascript parser needs to pass are the same exact tests that the Django tempalte parser needs to
-            pass.
-            <br><br>
-            In addition, the possibility of a foreign dependency is removed, since the Javascript template language is
-            identical to Django and the javascript parser is built to purpose.
-        </p>
-        <hr>
+        <a href="https://github.com/arbuckle/mango">Mango.js on GitHub</a>
     </div>
     <div class="two-thirds column">
         {% block serverside %}
