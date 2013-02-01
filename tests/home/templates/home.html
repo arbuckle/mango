@@ -72,7 +72,7 @@
 
             }).on('click', '.render', function(event){
                 var templateHTML = document.getElementById($(this).attr('data-target')).innerHTML,
-                    template = mango.template(templateHTML),
+                    template = mango.compile(templateHTML),
                     $target = $(this).parent().siblings('.client-test');
                 $target.html(template(page_context));
 

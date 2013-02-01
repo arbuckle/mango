@@ -601,7 +601,7 @@
         tag: /{%([\s\S]+?)%}/g,
         tvar: /{{([\s\S]+?)}}/g
     };
-    mango.template = function(text, data, settings) {
+    mango.compile = function(text, data, settings) {
         if (settings === undefined) {
             settings = mango.templateSettings;
         }
