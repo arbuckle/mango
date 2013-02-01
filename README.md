@@ -1,10 +1,8 @@
-mango.js
-=====
-DRY client-side templates for Django.
--------------------------------------
+###mango.js 0.0.1
+##DRY client-side templates for Django.
 
 **Problem**:    When writing a thick-client application, templates must be *duplicated* in a client-side template language
-in order to avoid the first-load tradeoff.
+in order to avoid the first-load tradeoff.  What happened to Don't Repeat Yourself?
 
 **Solution**:   mango.js.  Client-side rendering for Django templates.
 
