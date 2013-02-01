@@ -9,10 +9,9 @@ in order to avoid the first-load tradeoff.
 **Solution**:   mango.js.  Client-side rendering for Django templates.
 
 * Mango.js compiles *verbatim Django templates* to a callable Javascript functions.
-* Mango.js renders the *exact same output* as Django templates when provided a JSON representation of the page context.
+* Mango.js renders HTML *identically* to Django templates when provided a JSON representation of the page context.
 * Mango.js supports (most of) Django's builtin template tags and filters.
 * Mango.js can be easily updated to support custom tags and filters.
-* Mango.js ignores missing tags and filters, so pre-processed input context does not result in errors.
 
 
 ###[Check out the demo](http://catto5k.com/mango/demo.html)
@@ -22,7 +21,7 @@ Getting Started
 ---------------
 
 Include your template in a script tag to deliver it to the browser.
-```javascript
+```
 <script id="hello" type="text/mango-template">
     <h2>{{ heading }}</h2>
     <p>
@@ -31,21 +30,22 @@ Include your template in a script tag to deliver it to the browser.
 </script>
 ```
 
-Instantiate a template using `mango.template`
-```javascript
+Instantiate a template using `mango.compile`
+```
 var source =  $('#hello').html();
-var template = mango.template(source);
+var template = mango.compile(source);
 ```
 
 Call the compiled template with a context variable in order to render it to HTML.
-```javascript
+```
 var context = {heading: "Free Cats", content: "Just complete this online survey!"};
+// Rendering the template to HTML
 var html = template(context);
-// Append the rendered template to the DOM
+// Appending the rendered HTML to the DOM
 $(body).append(html);
 ```
 
-This renders the following HTML:
+Here's the output:
 ```
     <h2>Free Cats</h2>
     <p>
@@ -57,7 +57,7 @@ This renders the following HTML:
 
 `{{ Expressions }}` correspond directly to variables passed in the context object.
 ```
-There are {{ num_lights }} lights!
+There are {{ num_lights }} lights! => There are 4 lights!
 ```
 
 `{% Statements %}` are used to evaluate conditional statements, iterate over Arrays and Dicts, and perform comparisons.
@@ -67,7 +67,7 @@ Conditions:
 {% if picard == True %}
     There are 4 lights!
 {% else %}
-    Ugggg.....
+    How many lights do you see?
 {% endif %}
 ```
 
@@ -81,7 +81,7 @@ Looping over arrays, dictionaries:
 
 {% for breed, weight in dogs.items %}
     {{ breed }}: {{ weight }}kg <br>
-{% %}
+{% endfor %}
 ```
 
 ####Filters
@@ -91,9 +91,9 @@ and accept one argument at most.
 {{ 'YELL'|lower }}, {{ 'whisper'|upper }}, {{ title|slugify }}, {{ birthday|date:"Y-m-d" }}
 ```
 
-For more example, check out Django's [template documentation](https://docs.djangoproject.com/en/dev/ref/templates/builtins/).
+For more examples, check out Django's [template documentation](https://docs.djangoproject.com/en/dev/ref/templates/builtins/).
 Mango.js is intended to be a near-feature-complete port of functionality, such that any template which compiles in Django
-will work with Mango.
+will work with Mango.  If a tag or filter is missing from mango, issue reports or pull requests are welcome!
 
 
 Re-Using Templates
@@ -114,7 +114,7 @@ Re-Using Templates
 3.  Compile a mango template object and grab the context variable:
     ```
     var templateSource = document.getElementById('MyClientSideTemplate').innerHTML,
-        myTemplate = mango.template(templateSource);
+        myTemplate = mango.compile(templateSource);
 
     var page_context = JSON.parse("{{ page_context|escapejs }}");
     ```
@@ -240,15 +240,16 @@ is passed to it.
 
 
 *Development is not yet complete. TODOs:*
-- forloop meta variables! (how could I have forgotten?!)
+- forloop 'parentloop' construct
+- 'in' operator ({% if x in y %})
+- {% url %}
 - {% ifchanged %}
 - {% ifequal %}
 - {% ifnotequal %}
 - {% include %} (*crazy!*)
 - {% spaceless %}
-- {% url %}
 - {% verbatim %}
 - Fix linebreaksbr and linebreaks
-- Maybe refactor the whole thing, since it's extremely difficult to debug
+- Maybe refactor the whole thing, since the compiled template functions are difficult to debug
 
 
