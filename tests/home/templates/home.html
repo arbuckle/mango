@@ -74,7 +74,6 @@
                 var templateHTML = document.getElementById($(this).attr('data-target')).innerHTML,
                     template = mango.compile(templateHTML),
                     $target = $(this).parent().siblings('.client-test');
-                $target.html(template(page_context));
 
                 for (var i=0; i < $templates.length; i++) {
                     if ($templates[i].innerHTML === templateHTML) {
@@ -82,10 +81,12 @@
                         console.log('debug:\t$templates['+i+'].cache.source');
                     }
                 }
+                $target.html(template(page_context));
+
             });
 
             /*
-            $('.test-wrap').each(function(idx, val){
+             $('#ServerWrap .render').each(function(idx, val){
                 var title = $(this).find('.server-test h5').html(),
                     server = $(this).find('.server-test').html().trim(),
                     client = $(this).find('.client-test').html().trim(),
@@ -93,5 +94,19 @@
                 console.log(result, title);
             });
             */
+            function runTest() {
+                $('#ServerWrap .render').each(function(idx, val) {
+                    $(this).trigger('click');
+                });
+
+                var $serverTemplates = $('.server-test'),
+                        $clientTemplates = $('.client-test');
+
+                $templates.each(function(idx, val){
+                    //console.log($serverTemplates[idx], $clientTemplates[idx]);
+                    var result = ($.trim($serverTemplates[idx].innerHTML) == $.trim($clientTemplates[idx].innerHTML)) ? 'pass: ' : 'fail: ';
+                    console.log(result, $($serverTemplates[idx]).find('h5').text());
+                });
+            }
         </script>
     {% endblock foot %}
