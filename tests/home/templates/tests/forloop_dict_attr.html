@@ -1,0 +1,26 @@
+<div class="test">
+    <h5>Looping over dict attributes.</h5>
+        <strong>List</strong><br>
+        {% for fruit in shopping_cats.fruits %}
+            {{ fruit }}<br>
+            counters: [counter: {{ forloop.counter }}, revcounter: {{ forloop.revcounter }}, first: {{ forloop.first }}]<br>
+        {% endfor %}
+        <hr>
+        <strong>Dict Keys Only</strong><br>
+        {% for veg in shopping_cats.veggies %}
+            {{ veg }} <br>
+            counters: [counter: {{ forloop.counter }}, revcounter: {{ forloop.revcounter }}, first: {{ forloop.first }}]<br>
+        {% endfor %}
+        <hr>
+        <strong>One assigment, .items called.</strong><br>
+        {% for veg in shopping_cats.veggies.items %}
+            {{ veg }} <br>
+            counters: [counter: {{ forloop.counter }}, revcounter: {{ forloop.revcounter }}, first: {{ forloop.first }}]<br>
+        {% endfor %}
+        <hr>
+        <strong>Dict Keys and Values</strong><br>
+        {% for veg, amt in shopping_cats.veggies.items %}
+            {{ veg }}: {{ amt }}<br>
+            counters: [counter: {{ forloop.counter }}, revcounter: {{ forloop.revcounter }}, first: {{ forloop.first }}]<br>
+        {% endfor %}
+</div>

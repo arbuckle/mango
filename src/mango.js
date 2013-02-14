@@ -71,7 +71,9 @@
             }
         }
     };
-
+    mango.isArray = Array.isArray || function(obj) {
+        return toString.call(obj) == '[object Array]';
+    };
     mango.filters = {
         add: function(str, arg) {
             try {
@@ -481,7 +483,7 @@
             */
             var i,
                 ret,
-                varType,
+                loopCallsItems = false,
                 loopArgs = args.slice(0, args.indexOf('in')),
                 loopVar = args.slice(args.indexOf('in') + 1, args.length + 1)[0];
 
@@ -505,33 +507,51 @@
                 return ret;
             }
 
-
             loopVar = loopVar.split('.');
-            if (loopVar.length > 1 && loopVar[1].toLowerCase() === 'items') {
-                /* it's a dict! Checking length for {% empty %} and opening loop. */
-                loopVar = loopVar[0];
-                ret = "forloop.__i=0;\n var __c=0; \n mango.each(" + loopVar + ", function(__th, i, __obj){ \n if ("+loopVar+".hasOwnProperty(i)) {__c++;}}); \n";
-                ret += "if (__c > 0) { \n ";
-                ret += "forloop.__c = __c;\n";
-                ret += "mango.each(" + loopVar + ", function(" + loopArgs[1] + ", " + loopArgs[0] + "){ \n ";
-                ret += getForLoopString();
-            } else {
-                loopVar = loopVar[0];
-                /* it's an array! Checking length for {% empty %} and opening loop. */
-                ret = "if (" + loopVar + ".length) { \n ";
-                ret += "forloop.__c = " + loopVar + ".length;\n forloop.__i = 0;\n";
-                ret += "forloop.__i=0;\n";
-                ret += "x = forloop;\n";
-                ret += "mango.each(" + loopVar + ", function(__th, i, __obj){ \n";
-                ret += getForLoopString();
-                for (i=0; i < loopArgs.length; i ++) {
-                    ret += "if (typeof(" + loopVar + "[" + i + "]) == 'object') { \n";
-                    ret += "var " + loopArgs[i] + " = " + loopVar + "[i][" + i + "]; \n";
-                    ret += "} else { \n";
-                    ret += "var " + loopArgs[i] + " = " + loopVar + "[i]; \n";
-                    ret += "} \n";
-                }
+            if (loopVar[loopVar.length-1].toLowerCase() === 'items') {
+                // Remove 'items' from the variable when found, since it's not a valid attribute in python.
+                loopVar.pop();
+                loopCallsItems = true;
             }
+            loopVar = loopVar.join('.');
+
+            // Getting the length of the object in order to populate loopvars object.
+            ret = "\n\t\t var __c=0; \n" +
+                    "\t\t if (!mango.isArray(" + loopVar + ")) { \n" +
+                    "\t\t\t mango.each(" + loopVar + ", function(__th, i, __obj){ \n if ("+loopVar+".hasOwnProperty(i)) {__c++;}}); \n" +
+                    "\t\t} else { \n" +
+                    "\t\t\t __c = " + loopVar + ".length; \n" +
+                    "\t\t } \n";
+
+            // Populating the loopvars object with the starting iterator index and the loop length.
+            ret +=  "\t\t forloop.__i=0; forloop.__c = __c; \n";
+
+            // If the array or object is populated, starting the loop.
+            ret +=  "\t\t if (forloop.__c > 0) { \n ";
+            ret +=  "\t\t\t mango.each(" + loopVar + ", function(__th, i, __obj) { \n";
+
+            ret +=  "\t\t\t\t if (!mango.isArray(" + loopVar + ")) { \n";
+                // variable assignments for Dicts.  Assignment differs on the basis of whether dict.items was accessed.
+                if (loopArgs.length == 1 && loopCallsItems) {
+                    ret += "\t\t\t\t\t var " + loopArgs[0] + " = '(' + i + ' : ' + __th + ')'; \n";
+                } else if (loopArgs.length == 1) {
+                    ret += "\t\t\t\t\t var " + loopArgs[0] + " = i; \n";
+                } else {
+                    ret +=  "\t\t\t\t\t var " + loopArgs[0] + " = i; \n" +
+                            "\t\t\t\t\t var " + loopArgs[1] + " = __th; \n";
+                }
+            ret += "\t\t\t\t } else { \n";
+                // Variable assignments for Lists.  Python supports chained assignments that correspond to the list length.
+                for (i=0; i < loopArgs.length; i ++) {
+                    ret += "\t\t\t\t\t if (typeof(" + loopVar + "[" + i + "]) == 'object') { \n";
+                        ret += "\t\t\t\t\t\t var " + loopArgs[i] + " = " + loopVar + "[i][" + i + "]; \n";
+                        ret += "\t\t\t\t\t } else { \n";
+                        ret += "\t\t\t\t\t\t var " + loopArgs[i] + " = " + loopVar + "[i]; \n";
+                        ret += "\t\t\t\t\t } \n";
+                    }
+            ret += "\t\t\t\t } \n";
+            ret +=  getForLoopString();
+
             return ret;
         },
         endfor: function() {

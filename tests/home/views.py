@@ -56,6 +56,14 @@ class Home(TemplateView):
             'denominator': 100,
             'fraction': 10/100.0,
             'fruits': ['Apple', 'Banana', 'mango'],
+            'shopping_cats': {
+                'fruits': ['Apple', 'Banana', 'mango'],
+                'veggies': {
+                    'celery': 4,
+                    'broccoli': 2,
+                    'carrots': 12
+                }
+            },
             'basic_list': [1,2],
             'longer_list': [x for x in xrange(0,3)],
             'empty_list': [],
