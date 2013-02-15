@@ -3,18 +3,79 @@
     This is an example of a simple conditional statements.<br>
 
     {% if 1 == 1 %}
-        Yes! One equals one!<br>
+        EQ pass<br>
+    {% else %}
+        fail
     {% endif %}
-
+    {% if 2 > 1 %}
+        GT pass<br>
+    {% else %}
+        fail
+    {% endif %}
+    {% if 1 < 2 %}
+        LT pass<br>
+    {% else %}
+        fail
+    {% endif %}
+    {% if 2 > 3 %}
+        fail
+    {% else %}
+        GT false pass<br>
+    {% endif %}
+    {% if 3 < 2 %}
+        fail
+    {% else %}
+        LT false pass<br>
+    {% endif %}
+    {% if 1 == 1 and 2 == 2 %}
+        Chaining pass<br>
+    {% else %}
+        fail
+    {% endif %}
+    {% if 1 >= 1 %}
+        GTE pass<br>
+    {% else %}
+        fail
+    {% endif %}
+    {% if 1 <= 1 %}
+        LTE pass<br>
+    {% else %}
+        fail
+    {% endif %}
+    {% if 1 >= 3 %}
+        fail
+    {% else %}
+        GTE false pass<br>
+    {% endif %}
+    {% if 2 <= 1 %}
+        fail
+    {% else %}
+        LTE false pass<br>
+    {% endif %}
     {% if 1 == 1 and 2 == 1 %}
-        Wrong!
+        fail
     {% else %}
-        One does NOT equal two<br>
+        Else pass<br>
     {% endif %}
-
-    {% if not True %}
-        Statement is True
+    {% if True %}
+        True pass<br>
     {% else %}
-        Statement is False
+        fail
     {% endif%}
+    {% if False %}
+        fail
+    {% else %}
+        False pass<br>
+    {% endif%}
+    {% if not True %}
+        fail
+    {% else %}
+        not true pass<br>
+    {% endif%}
+    {% if not False %}
+        not false pass<br>
+    {% else %}
+        fail
+    {% endif%}
+
 </div>

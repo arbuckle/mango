@@ -597,9 +597,12 @@
 
             if (tag === 'if' || tag === 'elif') {
                 mango.each(args, function(val, idx, obj) {
-                    obj[idx] = val.replace('>', ' > ').replace('<', ' < ')
-                        .replace('>=', ' >= ').replace('<=', ' <= ')
-                        .replace('==', ' == ').replace('!=', ' != ');
+                    if (val.match(/[>=|<=]/gi)) {
+                        obj[idx] = val.replace('>=', ' >= ').replace('<=', ' <= ');
+                    } else {
+                        obj[idx] = val.replace('>', ' > ').replace('<', ' < ')
+                            .replace('==', ' == ').replace('!=', ' != ');
+                    }
                 });
             }
 
