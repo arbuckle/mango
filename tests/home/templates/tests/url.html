@@ -1,0 +1,7 @@
+<div class="test">
+    <h5>URL Tag</h5>
+    URLConf is registered in a separate template. Both list and key-assignment methods work.
+    Lurking bug in key-assigment method where value contains an "=".<br>
+    {% url 'topic-view' id_forum=111 forum_slug='forum-slug' id_topic=222 topic_slug='topic-slug' %}<br>
+    {% url 'topic-view' 101 'forum-slug' 202 'topic-slug' %}
+</div>

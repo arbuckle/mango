@@ -49,7 +49,9 @@
         <script>
             {% include "tests/home/templates/json/test_data.html" %}
 
+            mango.URLConf.register("topic-view"    , "<id_forum>/<forum_slug>/<id_topic>/<topic_slug>/");
             var $templates = $('script[type="text/template"]');
+
 
             $('#ServerWrap').on('click', '.source', function(event){
                 var templateID = $(this).attr('data-target'),
